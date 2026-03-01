@@ -17,7 +17,7 @@ import { DeepSeekApi } from "./platforms/deepseek";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
-export const Models = ["deepseek-chat", "gemini-1.5-pro-latest"] as const;
+export const Models = ["deepseek-chat"] as const;
 export type ChatModel = ModelType;
 
 export interface MultimodalContent {

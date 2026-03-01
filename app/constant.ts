@@ -120,7 +120,7 @@ export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lan
 export const DEFAULT_SYSTEM_TEMPLATE = `
 You are a helper assistent.
 Current time: {{time}}
-Latex inline: \\(x^2\\) 
+Latex inline: \\(x^2\\)
 Latex block: $$e=mc^2$$
 `;
 
@@ -151,7 +151,7 @@ You are an AI assistant with access to system tools. Your role is to help users 
       - Use markdown code blocks with format: \`\`\`json:mcp:{clientId}\`\`\`
       - Always include:
         * method: "tools/call"（Only this method is supported）
-        * params: 
+        * params:
           - name: must match an available primitive name
           - arguments: required parameters for the primitive
 
@@ -220,7 +220,7 @@ You are an AI assistant with access to system tools. Your role is to help users 
    \`\`\`
 
    This is wrong because the method is not tools/call.
-   
+
    \`\`\`{
   "method": "search_repositories",
   "params": {
@@ -243,12 +243,12 @@ You are an AI assistant with access to system tools. Your role is to help users 
      }
    }
    \`\`\`
-   
+
    please follow the format strictly ONLY use tools/call method!!!!!!!!!!!
-   
+
 `;
 
-export const GEMINI_SUMMARIZE_MODEL = "gemini-2.0-flash";
+export const GEMINI_SUMMARIZE_MODEL = "gemini-2.5-flash";
 export const DEEPSEEK_SUMMARIZE_MODEL = "deepseek-chat";
 export const SUMMARIZE_MODEL = DEEPSEEK_SUMMARIZE_MODEL;
 
@@ -257,10 +257,9 @@ export const VISION_MODEL_REGEXES = [/vision/, /gemini-.*/, /vl/i];
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
 
 const googleModels = [
-  "gemini-2.5-flash",
-  "gemini-2.5-flash-lite",
-  "gemini-2.5-pro",
   "gemini-3-flash-preview",
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
 ];
 
 const deepseekModels = ["deepseek-chat", "deepseek-reasoner"];
