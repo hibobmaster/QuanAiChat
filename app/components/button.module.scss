@@ -24,6 +24,13 @@
     background-color: var(--primary);
     color: var(--on-primary);
 
+    &:not([disabled]):hover,
+    &:not([disabled]):focus {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
     path {
       fill: var(--on-primary) !important;
     }
@@ -34,7 +41,7 @@
     border-color: transparent;
     background-color: var(--danger-container);
 
-    &:hover {
+    &:not([disabled]):hover {
       border-color: var(--danger);
       background-color: var(--danger-container);
     }
@@ -44,8 +51,8 @@
     }
   }
 
-  &:hover,
-  &:focus {
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
     border-color: var(--primary);
     background-color: var(--surface-container-highest);
   }
