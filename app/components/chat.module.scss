@@ -46,27 +46,28 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 5px;
+  gap: 8px;
 
   &-end {
     display: flex;
     margin-left: auto;
-    gap: 5px;
+    gap: 8px;
   }
 
   .chat-input-action {
     display: inline-flex;
-    border-radius: 20px;
+    border-radius: 18px;
     font-size: 12px;
-    background-color: var(--white);
-    color: var(--black);
+    font-weight: 600;
+    background-color: var(--surface-container-high);
+    color: var(--on-surface);
     border: var(--border-in-light);
-    padding: 4px 10px;
+    padding: 6px 12px;
     animation: slide-in ease 0.3s;
     box-shadow: var(--card-shadow);
-    transition: width ease 0.3s;
+    transition: width ease 0.3s, background-color ease 0.2s, border-color ease 0.2s;
     align-items: center;
-    height: 16px;
+    height: 20px;
     width: var(--icon-width);
     overflow: hidden;
 
@@ -113,12 +114,12 @@
     justify-content: center;
     align-items: center;
     font-size: 12px;
-    background-color: var(--white);
-    color: var(--black);
+    background-color: var(--surface-container-high);
+    color: var(--on-surface);
 
     border: var(--border-in-light);
     box-shadow: var(--card-shadow);
-    padding: 10px 20px;
+    padding: 12px 22px;
     border-radius: 100px;
 
     animation: slide-in-from-top ease 0.3s;
@@ -204,23 +205,23 @@
   margin: 20px 0;
 
   .memory-prompt-content {
-    background-color: var(--white);
-    color: var(--black);
+    background-color: var(--surface-container-high);
+    color: var(--on-surface);
     border: var(--border-in-light);
-    border-radius: 10px;
-    padding: 10px;
+    border-radius: 18px;
+    padding: 14px;
     font-size: 12px;
     user-select: text;
   }
 }
 
 .clear-context {
-  margin: 20px 0 0 0;
-  padding: 4px 0;
+  margin: 24px 0 0 0;
+  padding: 8px 0;
 
   border-top: var(--border-in-light);
   border-bottom: var(--border-in-light);
-  box-shadow: var(--card-shadow) inset;
+  box-shadow: none;
 
   display: flex;
   justify-content: center;
@@ -284,14 +285,15 @@
   flex-direction: column;
   position: relative;
   height: 100%;
+  background-color: var(--surface-container-low);
 }
 
 .chat-body {
   flex: 1;
   overflow: auto;
   overflow-x: hidden;
-  padding: 20px;
-  padding-bottom: 40px;
+  padding: 28px;
+  padding-bottom: 44px;
   position: relative;
   overscroll-behavior: none;
 }
@@ -437,16 +439,18 @@
 .chat-message-item {
   box-sizing: border-box;
   max-width: 100%;
-  margin-top: 10px;
-  border-radius: 10px;
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 10px;
+  margin-top: 12px;
+  border-radius: 24px;
+  background-color: var(--surface-container-high);
+  padding: 14px 16px;
   font-size: 14px;
+  line-height: 1.6;
   user-select: text;
   word-break: break-word;
   border: var(--border-in-light);
   position: relative;
   transition: all ease 0.3s;
+  box-shadow: var(--card-shadow);
 }
 
 .chat-message-item-image {
@@ -521,7 +525,9 @@
 }
 
 .chat-message-user>.chat-message-container>.chat-message-item {
-  background-color: var(--second);
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+  border-color: transparent;
 
   &:hover {
     min-width: 0;
@@ -531,16 +537,17 @@
 .chat-input-panel {
   position: relative;
   width: 100%;
-  padding: 20px;
-  padding-top: 10px;
+  padding: 24px;
+  padding-top: 14px;
   box-sizing: border-box;
   flex-direction: column;
   border-top: var(--border-in-light);
-  box-shadow: var(--card-shadow);
+  background-color: var(--surface);
+  box-shadow: 0 -8px 24px rgba(30, 44, 48, 0.06);
 
   .chat-input-actions {
     .chat-input-action {
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
   }
 }
@@ -559,21 +566,21 @@
   display: flex;
   flex-direction: column-reverse;
 
-  background-color: var(--white);
+  background-color: var(--surface-container-high);
   border: var(--border-in-light);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow);
+  border-radius: 24px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-floating);
 
   .prompt-hint {
-    color: var(--black);
-    padding: 6px 10px;
+    color: var(--on-surface);
+    padding: 10px 14px;
     animation: slide-in ease 0.3s;
     cursor: pointer;
     transition: all ease 0.3s;
-    border: transparent 1px solid;
-    margin: 4px;
-    border-radius: 8px;
+    border: 1px solid transparent;
+    margin: 6px;
+    border-radius: 18px;
 
     &:not(:last-child) {
       margin-top: 0;
@@ -595,6 +602,7 @@
     &-selected,
     &:hover {
       border-color: var(--primary);
+      background-color: var(--primary-container);
     }
   }
 }
@@ -603,8 +611,10 @@
   cursor: text;
   display: flex;
   flex: 1;
-  border-radius: 10px;
+  border-radius: 24px;
   border: var(--border-in-light);
+  background-color: var(--surface-container-high);
+  box-shadow: var(--card-shadow);
 }
 
 .chat-input-panel-inner-attach {
@@ -613,33 +623,36 @@
 
 .chat-input-panel-inner:has(.chat-input:focus) {
   border: 1px solid var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-10);
 }
 
 .chat-input {
   height: 100%;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 24px;
   border: none;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
-  background-color: var(--white);
-  color: var(--black);
+  box-shadow: none;
+  background-color: transparent;
+  color: var(--on-surface);
   font-family: inherit;
-  padding: 10px 90px 10px 14px;
+  padding: 14px 96px 14px 18px;
   resize: none;
   outline: none;
   box-sizing: border-box;
-  min-height: 68px;
+  min-height: 82px;
+  line-height: 1.5;
 }
 
 .chat-input:focus {}
 
 .chat-input-send {
   background-color: var(--primary);
-  color: white;
+  color: var(--on-primary);
 
   position: absolute;
-  right: 30px;
-  bottom: 32px;
+  right: 36px;
+  bottom: 38px;
+  border-radius: 18px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -670,13 +683,14 @@
   justify-content: space-between;
   align-items: center;
   overflow: hidden;
-  padding: 10px;
-  background-color: var(--white);
+  padding: 12px;
+  background-color: var(--surface-container-high);
+  border-radius: 18px;
 }
 
 .shortcut-key-title {
   font-size: 14px;
-  color: var(--black);
+  color: var(--on-surface);
 }
 
 .shortcut-key-keys {
@@ -689,15 +703,15 @@
   align-items: center;
   justify-content: center;
   border: var(--border-in-light);
-  border-radius: 8px;
-  padding: 4px;
-  background-color: var(--gray);
-  min-width: 32px;
+  border-radius: 12px;
+  padding: 6px;
+  background-color: var(--surface-container);
+  min-width: 34px;
 }
 
 .shortcut-key span {
   font-size: 12px;
-  color: var(--black);
+  color: var(--on-surface);
 }
 
 .chat-main {
