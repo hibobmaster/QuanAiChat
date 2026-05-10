@@ -373,14 +373,6 @@ const cn = {
       Title: "单次回复限制 (max_tokens)",
       SubTitle: "单次交互所用的最大 Token 数",
     },
-    PresencePenalty: {
-      Title: "话题新鲜度 (presence_penalty)",
-      SubTitle: "值越大，越有可能扩展到新话题",
-    },
-    FrequencyPenalty: {
-      Title: "频率惩罚度 (frequency_penalty)",
-      SubTitle: "值越大，越有可能降低重复字词",
-    },
     TTS: {
       Enable: {
         Title: "启用文本转语音",

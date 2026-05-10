@@ -34,9 +34,7 @@ describe("DeepSeek request payload", () => {
         stream: true,
         modelConfig: {
           model: "deepseek-v4-pro",
-          temperature: 0.5,
-          presence_penalty: 0,
-          frequency_penalty: 0,
+          temperature: 1,
           top_p: 1,
         },
       }),
@@ -47,6 +45,22 @@ describe("DeepSeek request payload", () => {
       },
       reasoning_effort: "max",
     });
+    expect(
+      createDeepSeekRequestPayload?.({
+        messages: [{ role: "user", content: "hello" }],
+        stream: true,
+        modelConfig: {
+          model: "deepseek-v4-pro",
+          temperature: 1,
+          top_p: 1,
+        },
+      }),
+    ).toEqual(
+      expect.not.objectContaining({
+        presence_penalty: expect.anything(),
+        frequency_penalty: expect.anything(),
+      }),
+    );
   });
 
   test("does not add thinking settings for deepseek-v4-flash", () => {
@@ -62,9 +76,7 @@ describe("DeepSeek request payload", () => {
         stream: false,
         modelConfig: {
           model: "deepseek-v4-flash",
-          temperature: 0.5,
-          presence_penalty: 0,
-          frequency_penalty: 0,
+          temperature: 1,
           top_p: 1,
         },
       }),

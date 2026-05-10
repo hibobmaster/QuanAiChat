@@ -61,14 +61,12 @@ export const DEFAULT_CONFIG = {
   modelConfig: {
     model: "deepseek-v4-flash" as ModelType,
     providerName: ServiceProvider.DeepSeek as ServiceProvider,
-    temperature: 0.5,
+    temperature: 1,
     top_p: 1,
-    max_tokens: 4000,
-    presence_penalty: 0,
-    frequency_penalty: 0,
+    max_tokens: 1000000,
     sendMemory: true,
     historyMessageCount: 4,
-    compressMessageLengthThreshold: 1000,
+    compressMessageLengthThreshold: 100000,
     compressModel: "deepseek-v4-flash" as ModelType,
     compressProviderName: ServiceProvider.DeepSeek as ServiceProvider,
     enableInjectSystemPrompts: true,
@@ -101,13 +99,7 @@ export const ModalConfigValidator = {
     return x as ModelType;
   },
   max_tokens(x: number) {
-    return limitNumber(x, 0, 512000, 1024);
-  },
-  presence_penalty(x: number) {
-    return limitNumber(x, -2, 2, 0);
-  },
-  frequency_penalty(x: number) {
-    return limitNumber(x, -2, 2, 0);
+    return limitNumber(x, 0, 1000000, 1000000);
   },
   temperature(x: number) {
     return limitNumber(x, 0, 2, 1);
@@ -145,7 +137,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.5,
+    version: 4.6,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -193,8 +185,7 @@ export const useAppConfig = createPersistStore(
       if (version < 3.4) {
         state.modelConfig.sendMemory = true;
         state.modelConfig.historyMessageCount = 4;
-        state.modelConfig.compressMessageLengthThreshold = 1000;
-        state.modelConfig.frequency_penalty = 0;
+        state.modelConfig.compressMessageLengthThreshold = 100000;
         state.modelConfig.top_p = 1;
         state.modelConfig.template = DEFAULT_INPUT_TEMPLATE;
         state.dontShowMaskSplashScreen = false;
@@ -275,6 +266,22 @@ export const useAppConfig = createPersistStore(
               ["deepseek-chat", "deepseek-reasoner"].includes(model.name)
             ),
         );
+      }
+
+      if (version < 4.6) {
+        delete (state.modelConfig as Record<string, unknown>).presence_penalty;
+        delete (state.modelConfig as Record<string, unknown>).frequency_penalty;
+        if (state.modelConfig.temperature === 0.5) {
+          state.modelConfig.temperature =
+            DEFAULT_CONFIG.modelConfig.temperature;
+        }
+        if (state.modelConfig.max_tokens === 4000) {
+          state.modelConfig.max_tokens = DEFAULT_CONFIG.modelConfig.max_tokens;
+        }
+        if (state.modelConfig.compressMessageLengthThreshold === 1000) {
+          state.modelConfig.compressMessageLengthThreshold =
+            DEFAULT_CONFIG.modelConfig.compressMessageLengthThreshold;
+        }
       }
 
       return state as any;
