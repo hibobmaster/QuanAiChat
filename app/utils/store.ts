@@ -34,45 +34,49 @@ export function createPersistStore<T extends object, M>(
   ) => M,
   persistOptions: SecondParam<typeof persist<T & M & MakeUpdater<T>>>,
 ) {
-  persistOptions.storage = createJSONStorage(() => indexedDBStorage);
+  const storeCreator = combine(
+    {
+      ...state,
+      lastUpdateTime: 0,
+      _hasHydrated: false,
+    },
+    (set, get) => {
+      return {
+        ...methods(set as any, get as any),
+
+        markUpdate() {
+          set({ lastUpdateTime: Date.now() } as Partial<
+            T & M & MakeUpdater<T>
+          >);
+        },
+        update(updater) {
+          const state = deepClone(get());
+          updater(state);
+          set({
+            ...state,
+            lastUpdateTime: Date.now(),
+          });
+        },
+        setHasHydrated: (state: boolean) => {
+          set({ _hasHydrated: state } as Partial<T & M & MakeUpdater<T>>);
+        },
+      } as M & MakeUpdater<T>;
+    },
+  );
+
+  if (typeof window === "undefined") {
+    return create(storeCreator);
+  }
+
   const oldOonRehydrateStorage = persistOptions?.onRehydrateStorage;
-  persistOptions.onRehydrateStorage = (state) => {
-    oldOonRehydrateStorage?.(state);
-    return () => state.setHasHydrated(true);
+  const options = {
+    ...persistOptions,
+    storage: createJSONStorage(() => indexedDBStorage),
+    onRehydrateStorage: (state: T & M & MakeUpdater<T>) => {
+      oldOonRehydrateStorage?.(state);
+      return () => state.setHasHydrated(true);
+    },
   };
 
-  return create(
-    persist(
-      combine(
-        {
-          ...state,
-          lastUpdateTime: 0,
-          _hasHydrated: false,
-        },
-        (set, get) => {
-          return {
-            ...methods(set as any, get as any),
-
-            markUpdate() {
-              set({ lastUpdateTime: Date.now() } as Partial<
-                T & M & MakeUpdater<T>
-              >);
-            },
-            update(updater) {
-              const state = deepClone(get());
-              updater(state);
-              set({
-                ...state,
-                lastUpdateTime: Date.now(),
-              });
-            },
-            setHasHydrated: (state: boolean) => {
-              set({ _hasHydrated: state } as Partial<T & M & MakeUpdater<T>>);
-            },
-          } as M & MakeUpdater<T>;
-        },
-      ),
-      persistOptions as any,
-    ),
-  );
+  return create(persist(storeCreator, options as any));
 }
