@@ -13,7 +13,8 @@
     align-items: center;
     padding: 12px 64px;
     box-sizing: border-box;
-    background: var(--second);
+    background: var(--primary-container);
+    color: var(--on-primary-container);
     .top-banner-inner {
       display: flex;
       justify-content: center;

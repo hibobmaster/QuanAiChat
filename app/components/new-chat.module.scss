@@ -27,8 +27,9 @@
       padding: 20px 10px;
       border: var(--border-in-light);
       box-shadow: var(--card-shadow);
-      border-radius: 14px;
-      background-color: var(--white);
+      border-radius: 20px;
+      background-color: var(--surface-container-high);
+      color: var(--on-surface);
       transform: scale(1);
 
       &:first-child {
@@ -99,8 +100,9 @@
         padding: 10px 14px;
         border: var(--border-in-light);
         box-shadow: var(--card-shadow);
-        background-color: var(--white);
-        border-radius: 10px;
+        background-color: var(--surface-container-high);
+        color: var(--on-surface);
+        border-radius: 20px;
         margin-right: 10px;
         max-width: 8em;
         transform: scale(1);

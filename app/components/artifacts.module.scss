@@ -8,7 +8,8 @@
     align-items: center;
     height: 36px;
     padding: 20px;
-    background: var(--second);
+    background: var(--surface-container-high);
+    color: var(--on-surface);
   }
   &-title {
     flex: 1;
@@ -19,13 +20,16 @@
   &-content {
     flex-grow: 1;
     padding: 0 20px 20px 20px;
-    background-color: var(--second);
+    background-color: var(--surface-container-high);
+    color: var(--on-surface);
   }
 }
 
 .artifacts-iframe {
   width: 100%;
   border: var(--border-in-light);
-  border-radius: 6px;
-  background-color: var(--gray);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  background-color: var(--surface-container-high);
+  color: var(--on-surface);
 }
