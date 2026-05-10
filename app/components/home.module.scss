@@ -319,6 +319,11 @@
     }
   }
 
+  .chat-item-selected .chat-item-narrow-count {
+    color: var(--on-primary-container);
+    opacity: 1;
+  }
+
   .sidebar-tail {
     flex-direction: column-reverse;
     align-items: center;
