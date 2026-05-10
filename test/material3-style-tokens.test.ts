@@ -54,25 +54,40 @@ const legacyAliases = [
   "--white: var(--surface)",
   "--black: var(--on-surface)",
   "--gray: var(--surface-container-low)",
+  "--primary-dark: var(--primary-hover)",
+  "--primary-10:",
   "--second: var(--primary-container)",
   "--hover-color: var(--surface-container-high)",
+  "--bar-color:",
   "--border-in-light: 1px solid var(--outline-variant)",
   "--theme-color: var(--surface-container-low)",
+  "--shadow: var(--shadow-floating)",
+  "--card-shadow:",
 ];
+
+function expectMixinBlockToContain(
+  theme: "light" | "dark",
+  block: string,
+  expected: string,
+) {
+  if (!block.includes(expected)) {
+    throw new Error(`@mixin ${theme} is missing ${expected}`);
+  }
+}
 
 describe("Material 3 theme tokens", () => {
   it("defines semantic surface roles for light and dark themes", () => {
-    themeBlocks.forEach(([, block]) => {
+    themeBlocks.forEach(([theme, block]) => {
       semanticTokens.forEach((token) => {
-        expect(block).toContain(token);
+        expectMixinBlockToContain(theme, block, token);
       });
     });
   });
 
   it("keeps legacy aliases mapped to the semantic roles", () => {
-    themeBlocks.forEach(([, block]) => {
+    themeBlocks.forEach(([theme, block]) => {
       legacyAliases.forEach((alias) => {
-        expect(block).toContain(alias);
+        expectMixinBlockToContain(theme, block, alias);
       });
     });
   });
