@@ -48,7 +48,7 @@
       &-selected {
         background-color: var(--primary-container);
         color: var(--on-primary-container);
-        border-color: var(--primary);
+        box-shadow: inset 3px 0 0 var(--primary);
       }
 
       &:not(:last-child) {
