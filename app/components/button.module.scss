@@ -1,17 +1,19 @@
 .icon-button {
-  background-color: var(--white);
-  border-radius: 10px;
+  background-color: var(--surface-container-high);
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   overflow: hidden;
   user-select: none;
   outline: none;
-  border: none;
-  color: var(--black);
+  border: 1px solid transparent;
+  color: var(--on-surface);
+  min-height: 40px;
+  box-sizing: border-box;
 
   &[disabled] {
     cursor: not-allowed;
@@ -20,31 +22,32 @@
 
   &.primary {
     background-color: var(--primary);
-    color: white;
+    color: var(--on-primary);
 
     path {
-      fill: white !important;
+      fill: var(--on-primary) !important;
     }
   }
 
   &.danger {
-    color: rgba($color: red, $alpha: 0.8);
-    border-color: rgba($color: red, $alpha: 0.5);
-    background-color: rgba($color: red, $alpha: 0.05);
+    color: var(--danger);
+    border-color: transparent;
+    background-color: var(--danger-container);
 
     &:hover {
-      border-color: red;
-      background-color: rgba($color: red, $alpha: 0.1);
+      border-color: var(--danger);
+      background-color: var(--danger-container);
     }
 
     path {
-      fill: red !important;
+      fill: var(--danger) !important;
     }
   }
 
   &:hover,
   &:focus {
     border-color: var(--primary);
+    background-color: var(--surface-container-highest);
   }
 }
 
@@ -67,16 +70,18 @@
 @media only screen and (max-width: 600px) {
   .icon-button {
     padding: 16px;
+    min-height: 48px;
   }
 }
 
 .icon-button-text {
   font-size: 12px;
+  font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 
   &:not(:first-child) {
-    margin-left: 5px;
+    margin-left: 6px;
   }
 }
