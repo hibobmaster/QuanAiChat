@@ -1289,7 +1289,13 @@ function ChatSession() {
       if (!isVisionModel(currentModel)) {
         return;
       }
-      const items = (event.clipboardData || window.clipboardData).items;
+      const items = (
+        event.clipboardData ||
+        (window as Window & { clipboardData?: DataTransfer }).clipboardData
+      )?.items;
+      if (!items) {
+        return;
+      }
       for (const item of items) {
         if (item.kind === "file" && item.type.startsWith("image/")) {
           event.preventDefault();

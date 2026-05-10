@@ -2,7 +2,6 @@ import md5 from "spark-md5";
 import {
   DEFAULT_ENABLED_PROVIDERS,
   DEFAULT_MODELS,
-  DEFAULT_GA_ID,
   ServiceProvider,
 } from "../constant";
 import { isGPT4Model, resolveConfiguredSummaryModel } from "../utils/model";
@@ -35,9 +34,6 @@ declare global {
       // google only
       GOOGLE_API_KEY?: string;
       GOOGLE_URL?: string;
-
-      // google tag manager
-      GTM_ID?: string;
 
       DEEPSEEK_URL?: string;
       DEEPSEEK_API_KEY?: string;
@@ -143,9 +139,6 @@ export const getServerSideConfig = () => {
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,
     cloudflareKVApiKey: getApiKey(process.env.CLOUDFLARE_KV_API_KEY),
     cloudflareKVTTL: process.env.CLOUDFLARE_KV_TTL,
-
-    gtmId: process.env.GTM_ID,
-    gaId: process.env.GA_ID || DEFAULT_GA_ID,
 
     needCode: ACCESS_CODES.size > 0,
     code: process.env.CODE,

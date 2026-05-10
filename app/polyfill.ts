@@ -2,6 +2,10 @@ declare global {
   interface Array<T> {
     at(index: number): T | undefined;
   }
+
+  interface Window {
+    _SW_ENABLED?: boolean;
+  }
 }
 
 if (!Array.prototype.at) {

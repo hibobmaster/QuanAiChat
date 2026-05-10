@@ -3,8 +3,6 @@ import "./styles/markdown.scss";
 import "./styles/highlight.scss";
 import { getClientConfig } from "./config/client";
 import type { Metadata, Viewport } from "next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { GoogleTagManager, GoogleAnalytics } from "@next/third-parties/google";
 import { getServerSideConfig } from "./config/server";
 
 export const metadata: Metadata = {
@@ -65,24 +63,7 @@ export default function RootLayout({
           data-website-id="6ac8e216-95c3-495d-8974-ad467b2c7fed"
         ></script>
       </head>
-      <body>
-        {children}
-        {serverConfig?.isVercel && (
-          <>
-            <SpeedInsights />
-          </>
-        )}
-        {serverConfig?.gtmId && (
-          <>
-            <GoogleTagManager gtmId={serverConfig.gtmId} />
-          </>
-        )}
-        {serverConfig?.gaId && (
-          <>
-            <GoogleAnalytics gaId={serverConfig.gaId} />
-          </>
-        )}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
