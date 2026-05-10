@@ -14,7 +14,6 @@ describe("brand name and logo", () => {
       "app/components/sidebar.tsx",
       "app/components/exporter.tsx",
       "app/components/artifacts.tsx",
-      "app/client/api.ts",
       "app/mcp/logger.ts",
       "public/site.webmanifest",
     ];

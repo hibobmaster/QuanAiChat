@@ -104,10 +104,6 @@ if (mode !== "export") {
         destination: "https://fonts.googleapis.com/:path*",
       },
       {
-        source: "/sharegpt",
-        destination: "https://sharegpt.com/api/conversations",
-      },
-      {
         source: "/api/proxy/alibaba/:path*",
         destination: "https://dashscope.aliyuncs.com/api/:path*",
       },

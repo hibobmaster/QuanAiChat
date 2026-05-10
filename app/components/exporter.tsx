@@ -7,7 +7,6 @@ import {
   Modal,
   Select,
   showImageModal,
-  showModal,
   showToast,
 } from "./ui-lib";
 import { IconButton } from "./button";
@@ -21,20 +20,16 @@ import {
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import ChatGptIcon from "../icons/chatgpt.png";
-import ShareIcon from "../icons/share.svg";
 
 import DownloadIcon from "../icons/download.svg";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { MessageSelector, useMessageSelector } from "./message-selector";
 import { Avatar } from "./emoji";
 import dynamic from "next/dynamic";
 import NextImage from "next/image";
 
-import { toBlob, toPng } from "html-to-image";
+import { toBlob, toJpeg } from "html-to-image";
 
-import { prettyObject } from "../utils/format";
-import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
-import { type ClientApi, getClientApi } from "../client/api";
 import { getMessageTextContent } from "../utils";
 import { MaskAvatar } from "./mask";
 import clsx from "clsx";
@@ -42,6 +37,15 @@ import clsx from "clsx";
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
 });
+
+const EXPORT_IMAGE_MIME_TYPE = "image/jpeg";
+const EXPORT_IMAGE_QUALITY = 0.82;
+const EXPORT_IMAGE_PIXEL_RATIO = 1;
+const EXPORT_IMAGE_OPTIONS = {
+  backgroundColor: "#fff",
+  quality: EXPORT_IMAGE_QUALITY,
+  pixelRatio: EXPORT_IMAGE_PIXEL_RATIO,
+};
 
 export function ExportMessageModal(props: { onClose: () => void }) {
   return (
@@ -253,154 +257,30 @@ export function MessageExporter() {
   );
 }
 
-export function RenderExport(props: {
-  messages: ChatMessage[];
-  onRender: (messages: ChatMessage[]) => void;
-}) {
-  const domRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!domRef.current) return;
-    const dom = domRef.current;
-    const messages = Array.from(
-      dom.getElementsByClassName(EXPORT_MESSAGE_CLASS_NAME),
-    );
-
-    if (messages.length !== props.messages.length) {
-      return;
-    }
-
-    const renderMsgs = messages.map((v, i) => {
-      const [role] = v.id.split(":");
-      return {
-        id: i.toString(),
-        role: role as any,
-        content: role === "user" ? (v.textContent ?? "") : v.innerHTML,
-        date: "",
-      };
-    });
-
-    props.onRender(renderMsgs);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <div ref={domRef}>
-      {props.messages.map((m, i) => (
-        <div
-          key={i}
-          id={`${m.role}:${i}`}
-          className={EXPORT_MESSAGE_CLASS_NAME}
-        >
-          <Markdown content={getMessageTextContent(m)} defaultShow />
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export function PreviewActions(props: {
   download: () => void;
   copy: () => void;
   showCopy?: boolean;
-  messages?: ChatMessage[];
 }) {
-  const [loading, setLoading] = useState(false);
-  const [shouldExport, setShouldExport] = useState(false);
-  const config = useAppConfig();
-  const onRenderMsgs = (msgs: ChatMessage[]) => {
-    setShouldExport(false);
-
-    const api: ClientApi = getClientApi(config.modelConfig.providerName);
-
-    api
-      .share(msgs)
-      .then((res) => {
-        if (!res) return;
-        showModal({
-          title: Locale.Export.Share,
-          children: [
-            <input
-              type="text"
-              value={res}
-              key="input"
-              style={{
-                width: "100%",
-                maxWidth: "unset",
-              }}
-              readOnly
-              onClick={(e) => e.currentTarget.select()}
-            ></input>,
-          ],
-          actions: [
-            <IconButton
-              icon={<CopyIcon />}
-              text={Locale.Chat.Actions.Copy}
-              key="copy"
-              onClick={() => copyToClipboard(res)}
-            />,
-          ],
-        });
-        setTimeout(() => {
-          window.open(res, "_blank");
-        }, 800);
-      })
-      .catch((e) => {
-        console.error("[Share]", e);
-        showToast(prettyObject(e));
-      })
-      .finally(() => setLoading(false));
-  };
-
-  const share = async () => {
-    if (props.messages?.length) {
-      setLoading(true);
-      setShouldExport(true);
-    }
-  };
-
   return (
-    <>
-      <div className={styles["preview-actions"]}>
-        {props.showCopy && (
-          <IconButton
-            text={Locale.Export.Copy}
-            bordered
-            shadow
-            icon={<CopyIcon />}
-            onClick={props.copy}
-          ></IconButton>
-        )}
+    <div className={styles["preview-actions"]}>
+      {props.showCopy && (
         <IconButton
-          text={Locale.Export.Download}
+          text={Locale.Export.Copy}
           bordered
           shadow
-          icon={<DownloadIcon />}
-          onClick={props.download}
+          icon={<CopyIcon />}
+          onClick={props.copy}
         ></IconButton>
-        <IconButton
-          text={Locale.Export.Share}
-          bordered
-          shadow
-          icon={loading ? <LoadingIcon /> : <ShareIcon />}
-          onClick={share}
-        ></IconButton>
-      </div>
-      <div
-        style={{
-          position: "fixed",
-          right: "200vw",
-          pointerEvents: "none",
-        }}
-      >
-        {shouldExport && (
-          <RenderExport
-            messages={props.messages ?? []}
-            onRender={onRenderMsgs}
-          />
-        )}
-      </div>
-    </>
+      )}
+      <IconButton
+        text={Locale.Export.Download}
+        bordered
+        shadow
+        icon={<DownloadIcon />}
+        onClick={props.download}
+      ></IconButton>
+    </div>
   );
 }
 
@@ -415,28 +295,29 @@ export function ImagePreviewer(props: {
 
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const copy = () => {
+  const copy = async () => {
     showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-    toBlob(dom).then((blob) => {
+
+    try {
+      const blob = await toBlob(dom, {
+        ...EXPORT_IMAGE_OPTIONS,
+        type: EXPORT_IMAGE_MIME_TYPE,
+      });
       if (!blob) return;
-      try {
-        navigator.clipboard
-          .write([
-            new ClipboardItem({
-              "image/png": blob,
-            }),
-          ])
-          .then(() => {
-            showToast(Locale.Copy.Success);
-            refreshPreview();
-          });
-      } catch (e) {
-        console.error("[Copy Image] ", e);
-        showToast(Locale.Copy.Failed);
-      }
-    });
+
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [EXPORT_IMAGE_MIME_TYPE]: blob,
+        }),
+      ]);
+      showToast(Locale.Copy.Success);
+      refreshPreview();
+    } catch (e) {
+      console.error("[Copy Image] ", e);
+      showToast(Locale.Copy.Failed);
+    }
   };
 
   const isMobile = useMobileScreen();
@@ -447,15 +328,15 @@ export function ImagePreviewer(props: {
     if (!dom) return;
 
     try {
-      const blob = await toPng(dom);
-      if (!blob) return;
+      const imageDataUrl = await toJpeg(dom, EXPORT_IMAGE_OPTIONS);
+      if (!imageDataUrl) return;
 
       if (isMobile) {
-        showImageModal(blob);
+        showImageModal(imageDataUrl);
       } else {
         const link = document.createElement("a");
-        link.download = `${props.topic}.png`;
-        link.href = blob;
+        link.download = `${props.topic}.jpg`;
+        link.href = imageDataUrl;
         link.click();
         refreshPreview();
       }
@@ -476,12 +357,7 @@ export function ImagePreviewer(props: {
 
   return (
     <div className={styles["image-previewer"]}>
-      <PreviewActions
-        copy={copy}
-        download={download}
-        showCopy={!isMobile}
-        messages={props.messages}
-      />
+      <PreviewActions copy={copy} download={download} showCopy={!isMobile} />
       <div
         className={clsx(styles["preview-body"], styles["default-theme"])}
         ref={previewRef}
@@ -610,12 +486,7 @@ export function MarkdownPreviewer(props: {
   };
   return (
     <>
-      <PreviewActions
-        copy={copy}
-        download={download}
-        showCopy={true}
-        messages={props.messages}
-      />
+      <PreviewActions copy={copy} download={download} showCopy={true} />
       <div className="markdown-body">
         <pre className={styles["export-content"]}>{mdText}</pre>
       </div>
@@ -651,12 +522,7 @@ export function JsonPreviewer(props: {
 
   return (
     <>
-      <PreviewActions
-        copy={copy}
-        download={download}
-        showCopy={false}
-        messages={props.messages}
-      />
+      <PreviewActions copy={copy} download={download} showCopy={false} />
       <div className="markdown-body" onClick={copy}>
         <Markdown content={mdText} />
       </div>

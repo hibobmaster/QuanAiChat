@@ -6,7 +6,6 @@ import {
 } from "../constant";
 import {
   ChatMessageTool,
-  ChatMessage,
   ModelType,
   useAccessStore,
   useChatStore,
@@ -124,43 +123,6 @@ export class ClientApi {
   prompts() {}
 
   masks() {}
-
-  async share(messages: ChatMessage[], avatarUrl: string | null = null) {
-    const msgs = messages
-      .map((m) => ({
-        from: m.role === "user" ? "human" : "gpt",
-        value: m.content,
-      }))
-      .concat([
-        {
-          from: "human",
-          value:
-            "Share from [QuanAiChat]: https://github.com/hibobmaster/QuanAiChat",
-        },
-      ]);
-
-    console.log("[Share]", messages, msgs);
-    const clientConfig = getClientConfig();
-    const proxyUrl = "/sharegpt";
-    const rawUrl = "https://sharegpt.com/api/conversations";
-    const shareUrl = clientConfig?.isApp ? rawUrl : proxyUrl;
-    const res = await fetch(shareUrl, {
-      body: JSON.stringify({
-        avatarUrl,
-        items: msgs,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-    });
-
-    const resJson = await res.json();
-    console.log("[Share]", resJson);
-    if (resJson.id) {
-      return `https://shareg.pt/${resJson.id}`;
-    }
-  }
 }
 
 export function getBearerToken(

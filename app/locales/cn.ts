@@ -103,7 +103,6 @@ const cn = {
     Title: "分享聊天记录",
     Copy: "全部复制",
     Download: "下载文件",
-    Share: "分享到 ShareGPT",
     MessageFromYou: "用户",
     MessageFromChatGPT: "ChatGPT",
     Format: {
