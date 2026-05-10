@@ -295,8 +295,10 @@ input[type="password"] {
   font-family: inherit;
 }
 
-div.math {
+div.math,
+.katex-display {
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .modal-mask {

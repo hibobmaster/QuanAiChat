@@ -119,6 +119,11 @@
   }
 }
 
+.markdown-body .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
 .markdown-body .octicon {
   display: inline-block;
   fill: currentColor;
