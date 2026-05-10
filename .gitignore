@@ -38,6 +38,7 @@ dev
 
 .vscode
 .idea
+.superpowers/
 
 # docker-compose env files
 .env
