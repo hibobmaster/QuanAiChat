@@ -6,15 +6,15 @@ import type { Metadata, Viewport } from "next";
 import { getServerSideConfig } from "./config/server";
 
 export const metadata: Metadata = {
-  title: "QuanQuanChat",
-  description: "由quanquan.space提供的公益GPT服务",
+  title: "QuanAiChat",
+  description: "quanquan.space 公益 GPT 服务",
   icons: {
-    icon: "/quanquan.png",
-    shortcut: "/quanquan.png",
-    apple: "/quanquan.png",
+    icon: "/quanai.png",
+    shortcut: "/quanai.png",
+    apple: "/quanai.png",
   },
   appleWebApp: {
-    title: "QuanQuanChat",
+    title: "QuanAiChat",
     statusBarStyle: "default",
   },
 };

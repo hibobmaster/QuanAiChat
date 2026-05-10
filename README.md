@@ -52,7 +52,7 @@ QuanAiChat is a privacy-first chat platform built with Next.js and React 19. It 
 
 ### Docker & proxies
 
-- `docker build -t quanquanchat .` / `docker-compose up` to rebuild the image defined in `Dockerfile`, which wires `yarn build` and optionally `proxychains`.
+- `docker build -t quanaichat .` / `docker-compose up` to rebuild the image defined in `Dockerfile`, which wires `yarn build` and optionally `proxychains`.
 - Configure `PROXY_URL` to run requests through a proxy. The container installs `proxychains-ng` and rewrites `/etc/proxychains.conf` before starting `node server.js`.
 - Pass `PROXY_URL`, `OPENAI_API_KEY`, `GOOGLE_API_KEY`, `CODE`, and `ENABLE_MCP` when running the container to match your deployment profile.
 

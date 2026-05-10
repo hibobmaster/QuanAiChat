@@ -14,7 +14,7 @@ export class MCPClientLogger {
   private readonly debugMode: boolean;
 
   constructor(
-    prefix: string = "QuanQuanChat MCP Client",
+    prefix: string = "QuanAiChat MCP Client",
     debugMode: boolean = false,
   ) {
     this.prefix = prefix;

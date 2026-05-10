@@ -10,7 +10,7 @@ import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import McpIcon from "../icons/mcp.svg";
 import DragIcon from "../icons/drag.svg";
-import QuanquanLogo from "../../assets/quanquan.png";
+import QuanAiLogo from "../../assets/quanai.png";
 
 import Locale from "../locales";
 
@@ -239,12 +239,12 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="QuanQuanChat"
-        subTitle="由quanqquan.space提供的公益GPT服務"
+        title="QuanAiChat"
+        subTitle="quanquan.space 公益 GPT 服務"
         logo={
           <Image
-            src={QuanquanLogo}
-            alt="QuanQuanChat logo"
+            src={QuanAiLogo}
+            alt="QuanAiChat logo"
             width={64}
             height={64}
             className={styles["sidebar-logo-image"]}
