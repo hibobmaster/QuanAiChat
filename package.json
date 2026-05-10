@@ -95,7 +95,7 @@
     "watch": "^1.0.2",
     "webpack": "^5.103.0"
   },
-  "packageManager": "pnpm@9.15.0",
+  "packageManager": "pnpm@11.0.9",
   "pnpm": {
     "overrides": {
       "@types/react": "^19.2.7",

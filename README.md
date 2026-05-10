@@ -1,6 +1,6 @@
-## QuanQuanChat (ChatGPT Next Web)
+## QuanAiChat
 
-QuanQuanChat (aka ChatGPT Next Web) is a privacy-first chat platform built with Next.js and React 19. It provides a modular interface for managing prompts and provider lists so you can host a self‑service ChatGPT experience for the web.
+QuanAiChat is a privacy-first chat platform built with Next.js and React 19. It provides a modular interface for managing prompts and provider lists so you can host a self‑service ChatGPT experience for the web.
 
 ## Features
 
