@@ -17,6 +17,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.24.3
         version: 1.24.3(zod@4.1.13)
+      '@pydantic/monty':
+        specifier: ^0.0.17
+        version: 0.0.17(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)
       '@svgr/webpack':
         specifier: ^8.1.0
         version: 8.1.0(typescript@5.9.3)
@@ -1467,6 +1470,12 @@ packages:
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
+  '@napi-rs/wasm-runtime@1.1.4':
+    resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
+    peerDependencies:
+      '@emnapi/core': ^1.7.1
+      '@emnapi/runtime': ^1.7.1
+
   '@next/env@16.2.6':
     resolution: {integrity: sha512-gd8HoHN4ufj73WmR3JmVolrpJR47ILK6LouP5xElPglaVxir6e1a7VzvTvDWkOoPXT9rkkTzyCxBu4yeZfZwcw==}
 
@@ -1636,6 +1645,47 @@ packages:
   '@pkgr/core@0.2.9':
     resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@pydantic/monty-darwin-arm64@0.0.17':
+    resolution: {integrity: sha512-vJFSwC7+rKX8lrrwwdZ6qZeqCsZCM9X9PvcUDvMYLnzI69CBAvfyd1roExkSPThg1GfDhehgC9sGrz/0uIjGhQ==}
+    engines: {node: '>= 6.14.2 < 7 || >= 8.11.2 < 9 || >= 9.11.0 < 10 || >= 10.0.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@pydantic/monty-darwin-x64@0.0.17':
+    resolution: {integrity: sha512-19gHyDM/RjBZsVz7K6vmlCpn0TyKdH8HT0CMP66yaewfPAuyhLWDJKgnv9QeVt+Vhv16dCsGuZ7l0rtmUPVC8g==}
+    engines: {node: '>= 6.14.2 < 7 || >= 8.11.2 < 9 || >= 9.11.0 < 10 || >= 10.0.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@pydantic/monty-linux-arm64-gnu@0.0.17':
+    resolution: {integrity: sha512-mx7v/LAJB/BOYfAVcohQQy+d8JiqddmByI72Hs2GuOlfRsJlk3BaHbanOi4tHAz81yDVnOKxshyPZs52VbBvZw==}
+    engines: {node: '>= 6.14.2 < 7 || >= 8.11.2 < 9 || >= 9.11.0 < 10 || >= 10.0.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pydantic/monty-linux-x64-gnu@0.0.17':
+    resolution: {integrity: sha512-wJOKf9KqM6UoKvaqdArV90zT7arGAa3CDo65kxFgdY5iXByDtU0xgbPUpROfIWv8E8hMGA81cq9Do17YyIHfGQ==}
+    engines: {node: '>= 6.14.2 < 7 || >= 8.11.2 < 9 || >= 9.11.0 < 10 || >= 10.0.0'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@pydantic/monty-wasm32-wasi@0.0.17':
+    resolution: {integrity: sha512-j89Sau5+5m5oDlyOsfjD4hmLkIccVz2s6z5Ogb/s85UAjrCoBWvudH2irlLklD3Fp3Y+1lxT8PLDwx61ShjA9Q==}
+    engines: {node: '>=14.0.0'}
+    cpu: [wasm32]
+
+  '@pydantic/monty-win32-x64-msvc@0.0.17':
+    resolution: {integrity: sha512-cIYr5nOsxPqzMFRi/F58JT11T0kg9QRT7y1tVp76jeWnXMyZdAL0n/X4RnmdqIogZotLye4CwjFfNmTR5EWj7g==}
+    engines: {node: '>= 6.14.2 < 7 || >= 8.11.2 < 9 || >= 9.11.0 < 10 || >= 10.0.0'}
+    cpu: [x64]
+    os: [win32]
+
+  '@pydantic/monty@0.0.17':
+    resolution: {integrity: sha512-z0MsRgj1QVBe4adRMAbl3ctpf0n1lZYbaq98fZg3qhKhs8sExtfS2BHCW8Z/emprUfXW25FSPe0Abd9dchEiCQ==}
+    engines: {node: '>= 6.14.2 < 7 || >= 8.11.2 < 9 || >= 9.11.0 < 10 || >= 10.0.0'}
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
@@ -7040,6 +7090,13 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
+  '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)':
+    dependencies:
+      '@emnapi/core': 1.7.1
+      '@emnapi/runtime': 1.7.1
+      '@tybys/wasm-util': 0.10.1
+    optional: true
+
   '@next/env@16.2.6': {}
 
   '@next/eslint-plugin-next@16.2.6':
@@ -7149,6 +7206,41 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.2.9': {}
+
+  '@pydantic/monty-darwin-arm64@0.0.17':
+    optional: true
+
+  '@pydantic/monty-darwin-x64@0.0.17':
+    optional: true
+
+  '@pydantic/monty-linux-arm64-gnu@0.0.17':
+    optional: true
+
+  '@pydantic/monty-linux-x64-gnu@0.0.17':
+    optional: true
+
+  '@pydantic/monty-wasm32-wasi@0.0.17(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)':
+    dependencies:
+      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+    optional: true
+
+  '@pydantic/monty-win32-x64-msvc@0.0.17':
+    optional: true
+
+  '@pydantic/monty@0.0.17(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)':
+    optionalDependencies:
+      '@pydantic/monty-darwin-arm64': 0.0.17
+      '@pydantic/monty-darwin-x64': 0.0.17
+      '@pydantic/monty-linux-arm64-gnu': 0.0.17
+      '@pydantic/monty-linux-x64-gnu': 0.0.17
+      '@pydantic/monty-wasm32-wasi': 0.0.17(@emnapi/core@1.7.1)(@emnapi/runtime@1.7.1)
+      '@pydantic/monty-win32-x64-msvc': 0.0.17
+    transitivePeerDependencies:
+      - '@emnapi/core'
+      - '@emnapi/runtime'
 
   '@rtsao/scc@1.1.0': {}
 

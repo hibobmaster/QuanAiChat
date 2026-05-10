@@ -17,6 +17,12 @@ import {
 } from "@/app/utils";
 import { RequestPayload } from "./types";
 import { fetch } from "@/app/utils/stream";
+import {
+  createDeepSeekToolResultMessages,
+  getDeepSeekNativeTools,
+  mergeDeepSeekToolCallDelta,
+  nativeToolFunctions,
+} from "../native-tools";
 
 type DeepSeekModelConfig = {
   model: string;
@@ -39,6 +45,7 @@ export function createDeepSeekRequestPayload({
     model: modelConfig.model,
     temperature: modelConfig.temperature,
     top_p: modelConfig.top_p,
+    tools: getDeepSeekNativeTools(),
     // max_tokens: Math.max(modelConfig.max_tokens, 1024),
     // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
   };
@@ -126,24 +133,33 @@ export class DeepSeekApi implements LLMApi {
       );
 
       if (shouldStream) {
+        let reasoningContent = "";
         return streamWithThink(
           chatPath,
           requestPayload,
           getHeaders(false, ServiceProvider.DeepSeek),
-          [],
-          {},
+          getDeepSeekNativeTools(),
+          nativeToolFunctions,
           controller,
           // parseSSE
-          (text: string) => {
+          (text: string, runTools: any[]) => {
             const json = JSON.parse(text);
             const choices = json.choices as Array<{
               delta: {
                 content: string | null;
                 reasoning_content: string | null;
+                tool_calls?: any[];
               };
             }>;
             const reasoning = choices[0]?.delta?.reasoning_content;
             const content = choices[0]?.delta?.content;
+            const toolCalls = choices[0]?.delta?.tool_calls;
+
+            if (Array.isArray(toolCalls)) {
+              toolCalls.forEach((toolCall) =>
+                mergeDeepSeekToolCallDelta(runTools, toolCall),
+              );
+            }
 
             // Skip if both content and reasoning_content are empty or null
             if (
@@ -157,6 +173,7 @@ export class DeepSeekApi implements LLMApi {
             }
 
             if (reasoning && reasoning.length > 0) {
+              reasoningContent += reasoning;
               return {
                 isThinking: true,
                 content: reasoning,
@@ -173,14 +190,80 @@ export class DeepSeekApi implements LLMApi {
               content: "",
             };
           },
-          () => {},
+          (requestPayload, toolCallMessage, toolCallResult) => {
+            const messages = createDeepSeekToolResultMessages(
+              {
+                ...toolCallMessage,
+                ...(reasoningContent
+                  ? { reasoning_content: reasoningContent }
+                  : {}),
+              },
+              toolCallResult,
+            );
+            requestPayload.messages.push(...messages);
+            reasoningContent = "";
+          },
           options,
         );
       } else {
-        const res = await fetch(chatPath, chatPayload);
+        let res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
 
-        const resJson = await res.json();
+        let resJson = await res.json();
+        for (let i = 0; i < 5; i += 1) {
+          const message = resJson?.choices?.at(0)?.message;
+          const toolCalls = message?.tool_calls;
+          if (!Array.isArray(toolCalls) || toolCalls.length === 0) {
+            break;
+          }
+
+          const toolResults = await Promise.all(
+            toolCalls.map(async (tool: any) => {
+              const handler = nativeToolFunctions[tool.function.name];
+              if (!handler) {
+                return {
+                  name: tool.function.name,
+                  role: "tool",
+                  content: `Tool ${tool.function.name} is not available`,
+                  tool_call_id: tool.id,
+                };
+              }
+
+              const result = await handler(
+                tool.function.arguments
+                  ? JSON.parse(tool.function.arguments)
+                  : {},
+              );
+              return {
+                name: tool.function.name,
+                role: "tool",
+                content:
+                  typeof result.data === "string"
+                    ? result.data
+                    : JSON.stringify(result.data),
+                tool_call_id: tool.id,
+              };
+            }),
+          );
+
+          requestPayload.messages.push(
+            ...createDeepSeekToolResultMessages(
+              {
+                role: "assistant",
+                reasoning_content: message.reasoning_content,
+                tool_calls: toolCalls,
+              },
+              toolResults,
+            ),
+          );
+
+          res = await fetch(chatPath, {
+            ...chatPayload,
+            body: JSON.stringify(requestPayload),
+          });
+          resJson = await res.json();
+        }
+
         const message = this.extractMessage(resJson);
         options.onFinish(message, res);
       }

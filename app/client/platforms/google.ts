@@ -13,6 +13,13 @@ import {
 } from "@/app/utils";
 import { preProcessImageContent } from "@/app/utils/chat";
 import { fetch } from "@/app/utils/stream";
+import {
+  createGeminiFunctionCallTool,
+  createGeminiFunctionResponseContent,
+  createGeminiRequestPayload,
+  getGeminiNativeTools,
+  nativeToolFunctions,
+} from "../native-tools";
 
 export class GeminiProApi implements LLMApi {
   path(path: string, shouldStream = false): string {
@@ -122,7 +129,7 @@ export class GeminiProApi implements LLMApi {
         model: options.config.model,
       },
     };
-    const requestPayload = {
+    const requestPayload = createGeminiRequestPayload({
       contents: messages,
       generationConfig: {
         // stopSequences: [
@@ -151,7 +158,7 @@ export class GeminiProApi implements LLMApi {
           threshold: accessStore.googleSafetySettings,
         },
       ],
-    };
+    });
 
     let shouldStream = !!options.config.stream;
     const controller = new AbortController();
@@ -182,24 +189,106 @@ export class GeminiProApi implements LLMApi {
           chatPath,
           requestPayload,
           getHeaders(false, ServiceProvider.Google),
-          [],
-          {},
+          getGeminiNativeTools(),
+          nativeToolFunctions,
           controller,
           // parseSSE
-          (text: string) => {
+          (text: string, runTools: any[]) => {
             const chunkJson = JSON.parse(text);
-            return chunkJson?.candidates
-              ?.at(0)
-              ?.content.parts?.map((part: { text: string }) => part.text)
+            const modelContent = chunkJson?.candidates?.at(0)?.content;
+            const parts = modelContent?.parts ?? [];
+
+            parts
+              .filter((part: { functionCall?: any }) => part.functionCall)
+              .forEach((part: { functionCall: any }) => {
+                runTools.push(
+                  createGeminiFunctionCallTool(part.functionCall, modelContent),
+                );
+              });
+
+            return parts
+              ?.map((part: { text?: string }) => part.text)
+              .filter(Boolean)
               .join("\n\n");
           },
-          () => {},
+          (requestPayload, toolCallMessage, toolCallResult) => {
+            const firstTool = toolCallMessage.tool_calls.at(0);
+            requestPayload.contents.push(
+              firstTool?.geminiModelContent ?? {
+                role: "model",
+                parts: toolCallMessage.tool_calls.map((tool: any) => ({
+                  functionCall: {
+                    id: tool.id,
+                    name: tool.function.name,
+                    args: tool.function.arguments
+                      ? JSON.parse(tool.function.arguments)
+                      : {},
+                  },
+                })),
+              },
+            );
+            toolCallResult.forEach((result, index) => {
+              requestPayload.contents.push(
+                createGeminiFunctionResponseContent(
+                  toolCallMessage.tool_calls[index],
+                  result.content,
+                ),
+              );
+            });
+          },
           options,
         );
       } else {
-        const res = await fetch(chatPath, chatPayload);
+        let res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
-        const resJson = await res.json();
+
+        let resJson = await res.json();
+        for (let i = 0; i < 5; i += 1) {
+          const modelContent = resJson?.candidates?.at(0)?.content;
+          const functionCalls =
+            modelContent?.parts
+              ?.map((part: { functionCall?: any }) => part.functionCall)
+              .filter(Boolean) ?? [];
+
+          if (functionCalls.length === 0) {
+            break;
+          }
+
+          requestPayload.contents.push(modelContent);
+
+          for (const functionCall of functionCalls) {
+            const tool = createGeminiFunctionCallTool(
+              functionCall,
+              modelContent,
+            );
+            const handler = nativeToolFunctions[tool.function.name];
+            const result = handler
+              ? await handler(
+                  tool.function.arguments
+                    ? JSON.parse(tool.function.arguments)
+                    : {},
+                )
+              : {
+                  data: `Tool ${tool.function.name} is not available`,
+                  status: 404,
+                };
+            requestPayload.contents.push(
+              createGeminiFunctionResponseContent(
+                tool,
+                typeof result.data === "string"
+                  ? result.data
+                  : JSON.stringify(result.data),
+              ),
+            );
+          }
+
+          res = await fetch(chatPath, {
+            ...chatPayload,
+            body: JSON.stringify(requestPayload),
+          });
+          resJson = await res.json();
+        }
+
         if (resJson?.promptFeedback?.blockReason) {
           // being blocked
           options.onError?.(

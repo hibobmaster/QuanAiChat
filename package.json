@@ -22,6 +22,7 @@
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^18.0.1",
     "@modelcontextprotocol/sdk": "^1.24.3",
+    "@pydantic/monty": "^0.0.17",
     "@svgr/webpack": "^8.1.0",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
