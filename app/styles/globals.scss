@@ -4,40 +4,95 @@
 @mixin light {
   --theme: light;
 
-  /* color */
-  --white: white;
-  --black: rgb(48, 48, 48);
-  --gray: rgb(250, 250, 250);
-  --primary: rgb(29, 147, 171);
-  --second: rgb(231, 248, 255);
-  --hover-color: #f3f3f3;
-  --bar-color: rgba(0, 0, 0, 0.1);
-  --theme-color: var(--gray);
+  /* Material 3 Brand Teal roles */
+  --surface: #fbfcfe;
+  --surface-dim: #d9dddf;
+  --surface-bright: #fbfcfe;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f4f8fa;
+  --surface-container: #edf5f7;
+  --surface-container-high: #e6eff2;
+  --surface-container-highest: #dfe9ec;
+  --primary: #006a78;
+  --primary-hover: #005864;
+  --primary-container: #c7eaf1;
+  --on-primary: #ffffff;
+  --on-primary-container: #001f25;
+  --secondary-container: #dceff3;
+  --on-secondary-container: #0f333a;
+  --on-surface: #171d1f;
+  --on-surface-variant: #415154;
+  --outline: #718285;
+  --outline-variant: #c2d2d6;
+  --danger: #ba1a1a;
+  --danger-container: #ffdad6;
+  --on-danger-container: #410002;
 
-  /* shadow */
-  --shadow: 50px 50px 100px 10px rgb(0, 0, 0, 0.1);
-  --card-shadow: 0px 2px 4px 0px rgb(0, 0, 0, 0.05);
+  /* legacy aliases */
+  --white: var(--surface);
+  --black: var(--on-surface);
+  --gray: var(--surface-container-low);
+  --primary-dark: var(--primary-hover);
+  --primary-10: rgba(0, 106, 120, 0.12);
+  --second: var(--primary-container);
+  --hover-color: var(--surface-container-high);
+  --bar-color: rgba(23, 29, 31, 0.18);
+  --theme-color: var(--surface-container-low);
+
+  /* elevation */
+  --shadow-soft: 0 12px 32px rgba(30, 44, 48, 0.12);
+  --shadow-floating: 0 18px 44px rgba(30, 44, 48, 0.16);
+  --shadow: var(--shadow-floating);
+  --card-shadow: 0 2px 10px rgba(30, 44, 48, 0.08);
 
   /* stroke */
-  --border-in-light: 1px solid rgb(222, 222, 222);
+  --border-in-light: 1px solid var(--outline-variant);
 }
 
 @mixin dark {
   --theme: dark;
 
-  /* color */
-  --white: rgb(30, 30, 30);
-  --black: rgb(187, 187, 187);
-  --gray: rgb(21, 21, 21);
-  --primary: rgb(29, 147, 171);
-  --second: rgb(27 38 42);
-  --hover-color: #323232;
+  /* Material 3 Brand Teal roles */
+  --surface: #101719;
+  --surface-dim: #101719;
+  --surface-bright: #364143;
+  --surface-container-lowest: #0b1113;
+  --surface-container-low: #182123;
+  --surface-container: #1c2729;
+  --surface-container-high: #263134;
+  --surface-container-highest: #303c3f;
+  --primary: #80d4e2;
+  --primary-hover: #9ee8f4;
+  --primary-container: #004f5a;
+  --on-primary: #00363e;
+  --on-primary-container: #b7ebf4;
+  --secondary-container: #304a50;
+  --on-secondary-container: #cce7ed;
+  --on-surface: #e1e4e6;
+  --on-surface-variant: #bfcbcf;
+  --outline: #8a999d;
+  --outline-variant: #3f4d51;
+  --danger: #ffb4ab;
+  --danger-container: #93000a;
+  --on-danger-container: #ffdad6;
 
-  --bar-color: rgba(255, 255, 255, 0.1);
+  /* legacy aliases */
+  --white: var(--surface);
+  --black: var(--on-surface);
+  --gray: var(--surface-container-low);
+  --primary-dark: var(--primary-hover);
+  --primary-10: rgba(128, 212, 226, 0.16);
+  --second: var(--primary-container);
+  --hover-color: var(--surface-container-high);
+  --bar-color: rgba(225, 228, 230, 0.18);
+  --border-in-light: 1px solid var(--outline-variant);
+  --theme-color: var(--surface-container-low);
 
-  --border-in-light: 1px solid rgba(255, 255, 255, 0.192);
-
-  --theme-color: var(--gray);
+  /* elevation */
+  --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.24);
+  --shadow-floating: 0 18px 44px rgba(0, 0, 0, 0.32);
+  --shadow: var(--shadow-floating);
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 
   div:not(.no-dark)>svg {
     filter: invert(0.5);
@@ -95,8 +150,8 @@ html {
 }
 
 body {
-  background-color: var(--gray);
-  color: var(--black);
+  background-color: var(--surface-container-low);
+  color: var(--on-surface);
   margin: 0;
   padding: 0;
   height: var(--full-height);
@@ -109,11 +164,12 @@ body {
   overflow: hidden;
 
   @media only screen and (max-width: 600px) {
-    background-color: var(--second);
+    background-color: var(--surface-container);
   }
 
   *:focus-visible {
-    outline: none;
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
   }
 }
 
@@ -136,12 +192,12 @@ body {
 
 select {
   border: var(--border-in-light);
-  padding: 10px;
-  border-radius: 10px;
+  padding: 12px 16px;
+  border-radius: 18px;
   appearance: none;
   cursor: pointer;
-  background-color: var(--white);
-  color: var(--black);
+  background-color: var(--surface-container-high);
+  color: var(--on-surface);
   text-align: center;
 }
 
@@ -156,13 +212,13 @@ input {
 
 input[type="checkbox"] {
   cursor: pointer;
-  background-color: var(--white);
-  color: var(--black);
+  background-color: var(--surface-container-high);
+  color: var(--on-surface);
   appearance: none;
   border: var(--border-in-light);
-  border-radius: 5px;
-  height: 16px;
-  width: 16px;
+  border-radius: 6px;
+  height: 18px;
+  width: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -170,17 +226,17 @@ input[type="checkbox"] {
 
 input[type="checkbox"]:checked::after {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background-color: var(--primary);
   content: " ";
-  border-radius: 2px;
+  border-radius: 3px;
 }
 
 input[type="range"] {
   appearance: none;
-  background-color: var(--white);
-  color: var(--black);
+  background-color: var(--surface-container-high);
+  color: var(--on-surface);
 }
 
 @mixin thumb() {
@@ -228,13 +284,13 @@ input[type="number"],
 input[type="text"],
 input[type="password"] {
   appearance: none;
-  border-radius: 10px;
+  border-radius: 18px;
   border: var(--border-in-light);
-  min-height: 36px;
+  min-height: 40px;
   box-sizing: border-box;
-  background: var(--white);
-  color: var(--black);
-  padding: 0 10px;
+  background: var(--surface-container-high);
+  color: var(--on-surface);
+  padding: 0 14px;
   max-width: 50%;
   font-family: inherit;
 }
