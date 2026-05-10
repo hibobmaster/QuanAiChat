@@ -499,7 +499,7 @@ export function ImagePreviewer(props: {
           <div>
             <div className={styles["main-title"]}>QuanAiChat</div>
             <div className={styles["sub-title"]}>
-              github.com/ChatGPTNextWeb/ChatGPT-Next-Web
+              github.com/hibobmaster/QuanAiChat
             </div>
             <div className={styles["icons"]}>
               <MaskAvatar avatar={config.avatar} />

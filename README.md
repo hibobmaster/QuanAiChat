@@ -114,7 +114,6 @@ QuanAiChat is a privacy-first chat platform built with Next.js and React 19. It 
 
 - Follow `CODE_OF_CONDUCT.md`.
 - Keep commits in English, run `pnpm lint`, `pnpm test`, and `pnpm mask` before pushing.
-- Create issues or PRs against the upstream [ChatGPT-Next-Web](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web) repository.
 
 ## License
 
