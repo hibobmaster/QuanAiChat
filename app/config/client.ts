@@ -15,6 +15,7 @@ export function getClientConfig() {
 
 export type ServerConfigMeta = {
   enabledProviders: ServiceProvider[];
+  summaryModel?: string;
 };
 
 const SERVER_CONFIG_META_KEY = "server-config";

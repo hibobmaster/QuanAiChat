@@ -88,6 +88,7 @@ QuanAiChat is a privacy-first chat platform built with Next.js and React 19. It 
 - **Model & UI customization**
   - `CUSTOM_MODELS` – prefix with `+` to add, `-` to hide, and `name=display` to rename models. Use `-all`/`+all` to toggle defaults. ByteDance endpoints accept `modelName@bytedance=deploymentName`.
   - `DEFAULT_MODEL` – force the dropdown default.
+  - `DEFAULT_SUMMARY_MODEL` – optional model used for title/history summarization. Use `model` or `model@provider`; invalid or unavailable values fall back to the current chat model.
   - `VISION_MODELS` – comma-separated list of models that should render with camera/canvas mode on top of the built-in regex.
   - `WHITE_WEBDAV_ENDPOINTS` – comma or semicolon separated fully-qualified WebDAV URLs that are accessible from the file browser.
   - `DEFAULT_INPUT_TEMPLATE` – pre-fill the User Input Preprocessing template field.

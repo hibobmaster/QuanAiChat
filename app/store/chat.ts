@@ -19,16 +19,15 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SYSTEM_TEMPLATE,
-  GEMINI_SUMMARIZE_MODEL,
-  DEEPSEEK_SUMMARIZE_MODEL,
   MCP_SYSTEM_TEMPLATE,
   MCP_TOOLS_TEMPLATE,
   ServiceProvider,
   StoreKey,
-  SUMMARIZE_MODEL,
 } from "../constant";
+import { getServerConfig } from "../config/client";
 import Locale, { getLang } from "../locales";
 import { prettyObject } from "../utils/format";
+import { getModelProvider } from "../utils/model";
 import { createPersistStore } from "../utils/store";
 import { estimateTokenLength } from "../utils/token";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
@@ -116,18 +115,16 @@ function createEmptySession(): ChatSession {
   };
 }
 
-function getSummarizeModel(
+export function getSummarizeModel(
   currentModel: string,
   providerName: string,
 ): string[] {
-  // use a dedicated summarize model when available
-  if (currentModel.startsWith("gpt") || currentModel.startsWith("chatgpt")) {
-    return [SUMMARIZE_MODEL, ServiceProvider.DeepSeek];
-  }
-  if (currentModel.startsWith("gemini")) {
-    return [GEMINI_SUMMARIZE_MODEL, ServiceProvider.Google];
-  } else if (currentModel.startsWith("deepseek-")) {
-    return [DEEPSEEK_SUMMARIZE_MODEL, ServiceProvider.DeepSeek];
+  const summaryModel = getServerConfig()?.summaryModel ?? "";
+  if (summaryModel) {
+    const [model, provider] = getModelProvider(summaryModel);
+    if (model && provider) {
+      return [model, provider];
+    }
   }
 
   return [currentModel, providerName];
@@ -840,7 +837,7 @@ export const useChatStore = createPersistStore(
   },
   {
     name: StoreKey.Chat,
-    version: 3.5,
+    version: 3.6,
     migrate(persistedState, version) {
       const state = persistedState as any;
       const newState = JSON.parse(
@@ -919,7 +916,7 @@ export const useChatStore = createPersistStore(
             )
           ) {
             s.mask.modelConfig.providerName = ServiceProvider.DeepSeek;
-            s.mask.modelConfig.model = "deepseek-chat";
+            s.mask.modelConfig.model = "deepseek-v4-flash";
           }
         });
       }
@@ -930,6 +927,22 @@ export const useChatStore = createPersistStore(
             s.mask.modelConfig.compressModel = s.mask.modelConfig.model;
             s.mask.modelConfig.compressProviderName =
               s.mask.modelConfig.providerName;
+          }
+        });
+      }
+
+      if (version < 3.6) {
+        newState.sessions.forEach((s) => {
+          if (s.mask.modelConfig.model === "deepseek-chat") {
+            s.mask.modelConfig.model = "deepseek-v4-flash";
+          } else if (s.mask.modelConfig.model === "deepseek-reasoner") {
+            s.mask.modelConfig.model = "deepseek-v4-pro";
+          }
+
+          if (s.mask.modelConfig.compressModel === "deepseek-chat") {
+            s.mask.modelConfig.compressModel = "deepseek-v4-flash";
+          } else if (s.mask.modelConfig.compressModel === "deepseek-reasoner") {
+            s.mask.modelConfig.compressModel = "deepseek-v4-pro";
           }
         });
       }

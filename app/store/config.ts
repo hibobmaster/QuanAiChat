@@ -59,7 +59,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "deepseek-chat" as ModelType,
+    model: "deepseek-v4-flash" as ModelType,
     providerName: ServiceProvider.DeepSeek as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
@@ -69,7 +69,7 @@ export const DEFAULT_CONFIG = {
     sendMemory: true,
     historyMessageCount: 4,
     compressMessageLengthThreshold: 1000,
-    compressModel: "deepseek-chat" as ModelType,
+    compressModel: "deepseek-v4-flash" as ModelType,
     compressProviderName: ServiceProvider.DeepSeek as ServiceProvider,
     enableInjectSystemPrompts: true,
     template: config?.template ?? DEFAULT_INPUT_TEMPLATE,
@@ -145,7 +145,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.4,
+    version: 4.5,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -162,7 +162,7 @@ export const useAppConfig = createPersistStore(
         )
       ) {
         persistedModelConfig.providerName = ServiceProvider.DeepSeek;
-        persistedModelConfig.model = "deepseek-chat" as ModelType;
+        persistedModelConfig.model = "deepseek-v4-flash" as ModelType;
       }
       persistedModels.forEach((pModel) => {
         const idx = models.findIndex(
@@ -240,7 +240,7 @@ export const useAppConfig = createPersistStore(
           )
         ) {
           state.modelConfig.providerName = ServiceProvider.DeepSeek;
-          state.modelConfig.model = "deepseek-chat" as ModelType;
+          state.modelConfig.model = "deepseek-v4-flash" as ModelType;
         }
       }
       if (version < 4.3) {
@@ -253,6 +253,28 @@ export const useAppConfig = createPersistStore(
           state.modelConfig.compressProviderName =
             state.modelConfig.providerName;
         }
+      }
+
+      if (version < 4.5) {
+        if (state.modelConfig.model === "deepseek-chat") {
+          state.modelConfig.model = "deepseek-v4-flash" as ModelType;
+        } else if (state.modelConfig.model === "deepseek-reasoner") {
+          state.modelConfig.model = "deepseek-v4-pro" as ModelType;
+        }
+
+        if (state.modelConfig.compressModel === "deepseek-chat") {
+          state.modelConfig.compressModel = "deepseek-v4-flash" as ModelType;
+        } else if (state.modelConfig.compressModel === "deepseek-reasoner") {
+          state.modelConfig.compressModel = "deepseek-v4-pro" as ModelType;
+        }
+
+        state.models = state.models?.filter(
+          (model) =>
+            !(
+              model.provider?.providerName === ServiceProvider.DeepSeek &&
+              ["deepseek-chat", "deepseek-reasoner"].includes(model.name)
+            ),
+        );
       }
 
       return state as any;

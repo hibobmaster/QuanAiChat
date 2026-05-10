@@ -17,7 +17,7 @@ import { DeepSeekApi } from "./platforms/deepseek";
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
 
-export const Models = ["deepseek-chat"] as const;
+export const Models = ["deepseek-v4-flash"] as const;
 export type ChatModel = ModelType;
 
 export interface MultimodalContent {
@@ -190,7 +190,10 @@ export function validString(x: string): boolean {
   return x?.length > 0;
 }
 
-export function getHeaders(ignoreHeaders: boolean = false) {
+export function getHeaders(
+  ignoreHeaders: boolean = false,
+  providerName?: ServiceProvider,
+) {
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
   let headers: Record<string, string> = {};
@@ -205,7 +208,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   function getConfig() {
     const modelConfig = chatStore.currentSession().mask.modelConfig;
-    const isGoogle = modelConfig.providerName === ServiceProvider.Google;
+    const requestProviderName = providerName ?? modelConfig.providerName;
+    const isGoogle = requestProviderName === ServiceProvider.Google;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey

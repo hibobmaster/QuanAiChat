@@ -249,7 +249,7 @@ You are an AI assistant with access to system tools. Your role is to help users 
 `;
 
 export const GEMINI_SUMMARIZE_MODEL = "gemini-2.5-flash";
-export const DEEPSEEK_SUMMARIZE_MODEL = "deepseek-chat";
+export const DEEPSEEK_SUMMARIZE_MODEL = "deepseek-v4-flash";
 export const SUMMARIZE_MODEL = DEEPSEEK_SUMMARIZE_MODEL;
 
 export const VISION_MODEL_REGEXES = [/vision/, /gemini-.*/, /vl/i];
@@ -257,12 +257,13 @@ export const VISION_MODEL_REGEXES = [/vision/, /gemini-.*/, /vl/i];
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
 
 const googleModels = [
+  "gemini-3.1-flash-lite",
   "gemini-3-flash-preview",
   "gemini-2.5-flash",
   "gemini-2.5-pro",
 ];
 
-const deepseekModels = ["deepseek-chat", "deepseek-reasoner"];
+const deepseekModels = ["deepseek-v4-flash", "deepseek-v4-pro"];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [

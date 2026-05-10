@@ -210,6 +210,50 @@ export function collectModelsWithDefaultModel(
   return allModels;
 }
 
+export function resolveConfiguredSummaryModel(
+  summaryModel: string,
+  customModels: string,
+  enabledProviders: readonly string[] = DEFAULT_ENABLED_PROVIDERS,
+) {
+  const trimmedSummaryModel = summaryModel.trim();
+  if (!trimmedSummaryModel) {
+    return "";
+  }
+
+  const [targetModel, targetProvider] = getModelProvider(trimmedSummaryModel);
+  if (!targetModel) {
+    return "";
+  }
+
+  const normalizedProvider = targetProvider?.toLowerCase();
+  const modelTable = collectModelTable(
+    DEFAULT_MODELS,
+    customModels,
+    enabledProviders,
+  );
+  const matchedModel = Object.values(modelTable).find((model) => {
+    if (!model.available || model.name !== targetModel) {
+      return false;
+    }
+
+    if (!normalizedProvider) {
+      return true;
+    }
+
+    const providerName = model.provider?.providerName?.toLowerCase();
+    const providerId = model.provider?.id?.toLowerCase();
+    return (
+      normalizedProvider === providerName || normalizedProvider === providerId
+    );
+  });
+
+  if (!matchedModel?.provider?.providerName) {
+    return "";
+  }
+
+  return `${matchedModel.name}@${matchedModel.provider.providerName}`;
+}
+
 export function isModelAvailableInServer(
   customModels: string,
   modelName: string,

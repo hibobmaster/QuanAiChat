@@ -1,6 +1,11 @@
 "use client";
 // azure and openai, using same models. so using same LLMApi.
-import { ApiPath, DEEPSEEK_BASE_URL, DeepSeek } from "@/app/constant";
+import {
+  ApiPath,
+  DEEPSEEK_BASE_URL,
+  DeepSeek,
+  ServiceProvider,
+} from "@/app/constant";
 import { useAppConfig, useChatStore } from "@/app/store";
 import { streamWithThink } from "@/app/utils/chat";
 import {
@@ -18,6 +23,45 @@ import {
 } from "@/app/utils";
 import { RequestPayload } from "./types";
 import { fetch } from "@/app/utils/stream";
+
+type DeepSeekModelConfig = {
+  model: string;
+  temperature?: number;
+  presence_penalty?: number;
+  frequency_penalty?: number;
+  top_p?: number;
+};
+
+export function createDeepSeekRequestPayload({
+  messages,
+  stream,
+  modelConfig,
+}: {
+  messages: ChatOptions["messages"];
+  stream?: boolean;
+  modelConfig: DeepSeekModelConfig;
+}): RequestPayload {
+  const payload: RequestPayload = {
+    messages,
+    stream,
+    model: modelConfig.model,
+    temperature: modelConfig.temperature,
+    presence_penalty: modelConfig.presence_penalty,
+    frequency_penalty: modelConfig.frequency_penalty,
+    top_p: modelConfig.top_p,
+    // max_tokens: Math.max(modelConfig.max_tokens, 1024),
+    // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
+  };
+
+  if (modelConfig.model === "deepseek-v4-pro") {
+    payload.thinking = {
+      type: "enabled",
+    };
+    payload.reasoning_effort = "max";
+  }
+
+  return payload;
+}
 
 export class DeepSeekApi implements LLMApi {
   private disableListModels = true;
@@ -68,17 +112,11 @@ export class DeepSeekApi implements LLMApi {
       },
     };
 
-    const requestPayload: RequestPayload = {
+    const requestPayload = createDeepSeekRequestPayload({
       messages,
       stream: options.config.stream,
-      model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
-      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
-      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
-    };
+      modelConfig,
+    });
 
     console.log("[Request] openai payload: ", requestPayload);
 
@@ -92,7 +130,7 @@ export class DeepSeekApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: getHeaders(false, ServiceProvider.DeepSeek),
       };
 
       // make a fetch request
@@ -105,7 +143,7 @@ export class DeepSeekApi implements LLMApi {
         return streamWithThink(
           chatPath,
           requestPayload,
-          getHeaders(),
+          getHeaders(false, ServiceProvider.DeepSeek),
           [],
           {},
           controller,

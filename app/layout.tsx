@@ -46,6 +46,7 @@ export default function RootLayout({
           name="server-config"
           content={JSON.stringify({
             enabledProviders: serverConfig.enabledProviders,
+            summaryModel: serverConfig.summaryModel,
           })}
         />
         <meta

@@ -1,4 +1,4 @@
-import { ApiPath, Google } from "@/app/constant";
+import { ApiPath, Google, ServiceProvider } from "@/app/constant";
 import {
   ChatOptions,
   getHeaders,
@@ -178,7 +178,7 @@ export class GeminiProApi implements LLMApi {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: getHeaders(),
+        headers: getHeaders(false, ServiceProvider.Google),
       };
 
       const isThinking = options.config.model.includes("-thinking");
@@ -192,7 +192,7 @@ export class GeminiProApi implements LLMApi {
         return stream(
           chatPath,
           requestPayload,
-          getHeaders(),
+          getHeaders(false, ServiceProvider.Google),
           [],
           {},
           controller,

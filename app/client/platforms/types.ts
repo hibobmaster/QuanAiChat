@@ -10,4 +10,8 @@ export type RequestPayload = {
   top_p?: number;
   max_tokens?: number;
   tools?: any;
+  thinking?: {
+    type: "enabled" | "disabled";
+  };
+  reasoning_effort?: "high" | "max";
 };

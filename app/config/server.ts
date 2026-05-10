@@ -1,6 +1,11 @@
 import md5 from "spark-md5";
-import { DEFAULT_MODELS, DEFAULT_GA_ID, ServiceProvider } from "../constant";
-import { isGPT4Model } from "../utils/model";
+import {
+  DEFAULT_ENABLED_PROVIDERS,
+  DEFAULT_MODELS,
+  DEFAULT_GA_ID,
+  ServiceProvider,
+} from "../constant";
+import { isGPT4Model, resolveConfiguredSummaryModel } from "../utils/model";
 
 declare global {
   namespace NodeJS {
@@ -23,6 +28,7 @@ declare global {
       DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
       CUSTOM_MODELS?: string; // to control custom models
       DEFAULT_MODEL?: string; // to control default model in every new chat window
+      DEFAULT_SUMMARY_MODEL?: string; // to control title/history summary model
       VISION_MODELS?: string; // to control vision models
 
       // stability only
@@ -83,6 +89,7 @@ export const getServerSideConfig = () => {
   const disableGPT4 = !!process.env.DISABLE_GPT4;
   let customModels = process.env.CUSTOM_MODELS ?? "";
   let defaultModel = process.env.DEFAULT_MODEL ?? "";
+  let summaryModel = process.env.DEFAULT_SUMMARY_MODEL ?? "";
   let visionModels = process.env.VISION_MODELS ?? "";
 
   if (disableGPT4) {
@@ -104,6 +111,12 @@ export const getServerSideConfig = () => {
   if (isDeepSeek) {
     enabledProviders.push(ServiceProvider.DeepSeek);
   }
+
+  summaryModel = resolveConfiguredSummaryModel(
+    summaryModel,
+    customModels,
+    enabledProviders.length > 0 ? enabledProviders : DEFAULT_ENABLED_PROVIDERS,
+  );
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -147,6 +160,7 @@ export const getServerSideConfig = () => {
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
     defaultModel,
+    summaryModel,
     visionModels,
     enableMcp: process.env.ENABLE_MCP === "true",
   };
