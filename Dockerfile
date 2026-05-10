@@ -1,15 +1,13 @@
-FROM node:lts-alpine AS base
+FROM node:lts-slim AS base
 
 # Enable pnpm via corepack so every stage can run the same commands.
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 FROM base AS deps
 
-RUN apk add --no-cache libc6-compat
-
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Install production and development dependencies once for all subsequent stages.
 ENV HUSKY=0
@@ -17,7 +15,7 @@ RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 
-RUN apk update && apk add --no-cache git
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
 
 ENV GOOGLE_API_KEY=""
 ENV DEEPSEEK_API_KEY=""
@@ -33,7 +31,7 @@ RUN pnpm build
 FROM base AS runner
 WORKDIR /app
 
-RUN apk add proxychains-ng
+RUN apt-get update && apt-get install -y --no-install-recommends proxychains4 && rm -rf /var/lib/apt/lists/*
 
 ENV GOOGLE_API_KEY=""
 ENV DEEPSEEK_API_KEY=""
@@ -50,4 +48,4 @@ COPY --from=builder /app/app/mcp/mcp_config.default.json /app/app/mcp/mcp_config
 
 EXPOSE 3000
 
-CMD node server.js
+CMD ["node", "server.js"]
