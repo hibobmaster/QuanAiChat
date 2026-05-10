@@ -2,7 +2,7 @@ import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, ChatMessage } from "./chat";
 import { ModelConfig, useAppConfig } from "./config";
-import { StoreKey } from "../constant";
+import { ServiceProvider, StoreKey } from "../constant";
 import { nanoid } from "nanoid";
 import { createPersistStore } from "../utils/store";
 
@@ -112,7 +112,7 @@ export const useMaskStore = createPersistStore(
   }),
   {
     name: StoreKey.Mask,
-    version: 3.1,
+    version: 3.2,
 
     migrate(state, version) {
       const newState = JSON.parse(JSON.stringify(state)) as MaskState;
@@ -128,6 +128,18 @@ export const useMaskStore = createPersistStore(
           updatedMasks[m.id] = m;
         });
         newState.masks = updatedMasks;
+      }
+
+      if (version < 3.2) {
+        Object.values(newState.masks).forEach((m) => {
+          m.modelConfig.model = "deepseek-v4-pro";
+          m.modelConfig.providerName = ServiceProvider.DeepSeek;
+          m.modelConfig.temperature = 1;
+          m.modelConfig.max_tokens = 1000000;
+          m.modelConfig.compressMessageLengthThreshold = 100000;
+          m.modelConfig.compressModel = "deepseek-v4-flash";
+          m.modelConfig.compressProviderName = ServiceProvider.DeepSeek;
+        });
       }
 
       return newState as any;

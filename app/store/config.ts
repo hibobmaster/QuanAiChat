@@ -59,7 +59,7 @@ export const DEFAULT_CONFIG = {
   models: DEFAULT_MODELS as any as LLMModel[],
 
   modelConfig: {
-    model: "deepseek-v4-flash" as ModelType,
+    model: "deepseek-v4-pro" as ModelType,
     providerName: ServiceProvider.DeepSeek as ServiceProvider,
     temperature: 1,
     top_p: 1,
@@ -137,7 +137,7 @@ export const useAppConfig = createPersistStore(
   }),
   {
     name: StoreKey.Config,
-    version: 4.6,
+    version: 4.7,
 
     merge(persistedState, currentState) {
       const state = persistedState as ChatConfig | undefined;
@@ -154,7 +154,7 @@ export const useAppConfig = createPersistStore(
         )
       ) {
         persistedModelConfig.providerName = ServiceProvider.DeepSeek;
-        persistedModelConfig.model = "deepseek-v4-flash" as ModelType;
+        persistedModelConfig.model = "deepseek-v4-pro" as ModelType;
       }
       persistedModels.forEach((pModel) => {
         const idx = models.findIndex(
@@ -231,7 +231,7 @@ export const useAppConfig = createPersistStore(
           )
         ) {
           state.modelConfig.providerName = ServiceProvider.DeepSeek;
-          state.modelConfig.model = "deepseek-v4-flash" as ModelType;
+          state.modelConfig.model = "deepseek-v4-pro" as ModelType;
         }
       }
       if (version < 4.3) {
@@ -282,6 +282,16 @@ export const useAppConfig = createPersistStore(
           state.modelConfig.compressMessageLengthThreshold =
             DEFAULT_CONFIG.modelConfig.compressMessageLengthThreshold;
         }
+      }
+
+      if (version < 4.7) {
+        state.modelConfig.model = "deepseek-v4-pro" as ModelType;
+        state.modelConfig.providerName = ServiceProvider.DeepSeek;
+        state.modelConfig.temperature = 1;
+        state.modelConfig.max_tokens = 1000000;
+        state.modelConfig.compressMessageLengthThreshold = 100000;
+        state.modelConfig.compressModel = "deepseek-v4-flash" as ModelType;
+        state.modelConfig.compressProviderName = ServiceProvider.DeepSeek;
       }
 
       return state as any;

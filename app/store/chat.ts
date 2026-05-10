@@ -836,7 +836,7 @@ export const useChatStore = createPersistStore(
   },
   {
     name: StoreKey.Chat,
-    version: 3.6,
+    version: 3.7,
     migrate(persistedState, version) {
       const state = persistedState as any;
       const newState = JSON.parse(
@@ -944,6 +944,18 @@ export const useChatStore = createPersistStore(
           } else if (s.mask.modelConfig.compressModel === "deepseek-reasoner") {
             s.mask.modelConfig.compressModel = "deepseek-v4-pro";
           }
+        });
+      }
+
+      if (version < 3.7) {
+        newState.sessions.forEach((s) => {
+          s.mask.modelConfig.model = "deepseek-v4-pro";
+          s.mask.modelConfig.providerName = ServiceProvider.DeepSeek;
+          s.mask.modelConfig.temperature = 1;
+          s.mask.modelConfig.max_tokens = 1000000;
+          s.mask.modelConfig.compressMessageLengthThreshold = 100000;
+          s.mask.modelConfig.compressModel = "deepseek-v4-flash";
+          s.mask.modelConfig.compressProviderName = ServiceProvider.DeepSeek;
         });
       }
 
