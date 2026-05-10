@@ -12,6 +12,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # Install production and development dependencies once for all subsequent stages.
+ENV HUSKY=0
 RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
