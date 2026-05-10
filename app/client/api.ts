@@ -44,15 +44,6 @@ export interface LLMConfig {
   style?: string;
 }
 
-export interface SpeechOptions {
-  model: string;
-  input: string;
-  voice: string;
-  response_format?: string;
-  speed?: number;
-  onController?: (controller: AbortController) => void;
-}
-
 export interface ChatOptions {
   messages: RequestMessage[];
   config: LLMConfig;
@@ -87,7 +78,6 @@ export interface LLMModelProvider {
 
 export abstract class LLMApi {
   abstract chat(options: ChatOptions): Promise<void>;
-  abstract speech(options: SpeechOptions): Promise<ArrayBuffer>;
   abstract usage(): Promise<LLMUsage>;
   abstract models(): Promise<LLMModel[]>;
 }

@@ -57,7 +57,6 @@ export type ChatMessage = RequestMessage & {
   id: string;
   model?: ModelType;
   tools?: ChatMessageTool[];
-  audio_url?: string;
   isMcpResponse?: boolean;
 };
 
