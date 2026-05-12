@@ -486,6 +486,9 @@ export function ChatActions(props: {
         nextModel?.provider?.providerName == "DeepSeek"
           ? nextModel.displayName
           : nextModel.name,
+        undefined,
+        3000,
+        "above-input",
       );
     }
   }, [chatStore, currentModel, models, session]);
@@ -585,9 +588,14 @@ export function ChatActions(props: {
                     m.name == model &&
                     m?.provider?.providerName == providerName,
                 );
-                showToast(selectedModel?.displayName ?? "");
+                showToast(
+                  selectedModel?.displayName ?? "",
+                  undefined,
+                  3000,
+                  "above-input",
+                );
               } else {
-                showToast(model);
+                showToast(model, undefined, 3000, "above-input");
               }
             }}
           />
@@ -615,7 +623,7 @@ export function ChatActions(props: {
               chatStore.updateTargetSession(session, (session) => {
                 session.mask.modelConfig.size = size;
               });
-              showToast(size);
+              showToast(size, undefined, 3000, "above-input");
             }}
           />
         )}
@@ -642,7 +650,7 @@ export function ChatActions(props: {
               chatStore.updateTargetSession(session, (session) => {
                 session.mask.modelConfig.quality = quality;
               });
-              showToast(quality);
+              showToast(quality, undefined, 3000, "above-input");
             }}
           />
         )}
@@ -669,7 +677,7 @@ export function ChatActions(props: {
               chatStore.updateTargetSession(session, (session) => {
                 session.mask.modelConfig.style = style;
               });
-              showToast(style);
+              showToast(style, undefined, 3000, "above-input");
             }}
           />
         )}

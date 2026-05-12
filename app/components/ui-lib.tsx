@@ -269,8 +269,12 @@ export function showToast(
   content: string,
   action?: ToastProps["action"],
   delay = 3000,
+  placement?: "above-input",
 ) {
   const div = document.createElement("div");
+  if (placement) {
+    div.dataset.toastPlacement = placement;
+  }
   document.body.appendChild(div);
 
   const root = createRoot(div);

@@ -418,6 +418,33 @@
     margin-left: 10px;
   }
 
+  @media screen and (max-width: 600px) {
+    .window-header {
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 12px 20px;
+    }
+
+    .window-header-title {
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: none;
+    }
+
+    .window-header-main-title {
+      max-width: 100%;
+    }
+
+    .window-actions {
+      flex: 0 0 auto;
+      min-width: 0;
+    }
+
+    .window-action-button:not(:first-child) {
+      margin-left: 8px;
+    }
+  }
+
   .modal-mask {
     z-index: 9999;
     position: fixed;

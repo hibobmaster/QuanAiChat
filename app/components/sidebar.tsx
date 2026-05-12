@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Settings, Plus, Trash2, Wrench, GripVertical } from "lucide-react";
+import { Settings, Plus, Trash2, Wrench, GripVertical, X } from "lucide-react";
 import GithubIcon from "../icons/github.svg";
 
 import Image from "next/image";
@@ -268,6 +268,7 @@ export function SideBar(props: { className?: string }) {
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
   const chatStore = useChatStore();
+  const isMobileScreen = useMobileScreen();
   const [mcpEnabled, setMcpEnabled] = useState(false);
 
   useEffect(() => {
@@ -289,16 +290,25 @@ export function SideBar(props: { className?: string }) {
         title="QuanAiChat"
         subTitle="quanquan.space 公益 GPT 服務"
         logo={
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-container-high shadow-sm">
-            <Image
-              src={QuanAiLogo}
-              alt="QuanAiChat logo"
-              width={28}
-              height={28}
-              className="h-7 w-7 rounded-lg object-contain"
-              priority
+          isMobileScreen ? (
+            <IconButton
+              aria="Close chat list"
+              title="Close chat list"
+              icon={<X className="h-4 w-4" />}
+              onClick={() => navigate(Path.Chat)}
             />
-          </div>
+          ) : (
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-container-high shadow-sm">
+              <Image
+                src={QuanAiLogo}
+                alt="QuanAiChat logo"
+                width={28}
+                height={28}
+                className="h-7 w-7 rounded-lg object-contain"
+                priority
+              />
+            </div>
+          )
         }
         shouldNarrow={shouldNarrow}
       >
@@ -355,15 +365,17 @@ export function SideBar(props: { className?: string }) {
         }
         secondaryAction={
           <button
-            className="flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-on-primary shadow-sm transition-colors hover:bg-primary-hover active:scale-95"
+            className="flex min-w-fit items-center gap-2 whitespace-nowrap rounded-lg bg-primary px-3 py-2 text-sm font-medium text-on-primary shadow-sm transition-colors hover:bg-primary-hover active:scale-95"
             aria-label={Locale.Home.NewChat}
             onClick={() => {
               chatStore.newSession();
               navigate(Path.Chat);
             }}
           >
-            <Plus className="w-4 h-4" />
-            {!shouldNarrow && <span>{Locale.Home.NewChat}</span>}
+            <Plus className="h-4 w-4 shrink-0" />
+            {!shouldNarrow && (
+              <span className="whitespace-nowrap">{Locale.Home.NewChat}</span>
+            )}
           </button>
         }
       />

@@ -9,6 +9,7 @@ console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  devIndicators: false,
   serverExternalPackages: ["@pydantic/monty"],
   webpack(config) {
     config.module.rules.push({

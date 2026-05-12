@@ -18,6 +18,7 @@ import {
   Route,
   Routes,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
@@ -138,6 +139,7 @@ export function WindowContent(props: { children: React.ReactNode }) {
 function Screen() {
   const config = useAppConfig();
   const location = useLocation();
+  const navigate = useNavigate();
   const isArtifact = location.pathname.includes(Path.Artifacts);
   const isHome = location.pathname === Path.Home;
   const isAuth = location.pathname === Path.Auth;
@@ -146,7 +148,7 @@ function Screen() {
 
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
-    getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
+    getClientConfig()?.isApp || isMobileScreen || config.tightBorder;
 
   if (isArtifact) {
     return (
@@ -168,6 +170,14 @@ function Screen() {
             "max-md:-translate-x-full": !isHome,
           })}
         />
+        {isMobileScreen && isHome && (
+          <button
+            type="button"
+            aria-label="Close chat list"
+            className="fixed inset-0 z-40 hidden border-0 bg-black/25 p-0 max-md:block"
+            onClick={() => navigate(Path.Chat)}
+          />
+        )}
         <WindowContent>
           <Routes>
             <Route path={Path.Home} element={<Chat />} />

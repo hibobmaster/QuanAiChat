@@ -527,6 +527,7 @@
   padding: 18px clamp(18px, 3vw, 32px);
   padding-top: 12px;
   box-sizing: border-box;
+  flex: 0 0 auto;
   flex-direction: column;
   border-top: var(--border-in-light);
   background-color: var(--surface);
@@ -583,6 +584,7 @@
 
 .chat-input-panel-inner {
   cursor: text;
+  position: relative;
   display: flex;
   flex: 1;
   border-radius: 16px;
@@ -623,19 +625,38 @@
   background-color: var(--primary);
   color: var(--on-primary);
   position: absolute;
-  right: clamp(30px, 3vw, 44px);
-  bottom: 30px;
+  right: 12px;
+  bottom: 12px;
   border-radius: 12px;
 }
 
 @media only screen and (max-width: 600px) {
+  .chat-input-panel {
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .chat-input-panel .chat-input-actions {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .chat-input-panel .chat-input-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chat-input-panel .chat-input-actions .chat-input-action {
+    flex: 0 0 auto;
+    margin-bottom: 10px;
+  }
+
   .chat-input {
     font-size: 16px;
-    padding-right: 136px;
+    min-height: 104px;
+    padding: 14px 102px 14px 18px;
   }
+
   .chat-input-send {
-    right: 30px;
-    bottom: 30px;
     max-width: 104px;
   }
   .chat-input-send > div:last-child {
