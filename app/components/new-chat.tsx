@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Path, SlotID } from "../constant";
 import { IconButton } from "./button";
 import { EmojiAvatar } from "./emoji";
-import styles from "./new-chat.module.scss";
+import styles from "./new-chat.module.css";
 
 import LeftIcon from "../icons/left.svg";
 import LightningIcon from "../icons/lightning.svg";

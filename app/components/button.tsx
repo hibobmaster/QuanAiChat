@@ -1,6 +1,5 @@
 import * as React from "react";
 
-import styles from "./button.module.scss";
 import { CSSProperties } from "react";
 import clsx from "clsx";
 
@@ -21,16 +20,24 @@ export function IconButton(props: {
   style?: CSSProperties;
   aria?: string;
 }) {
+  const baseClasses =
+    "inline-flex min-h-10 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+  const typeClasses = {
+    primary: "bg-primary text-on-primary hover:bg-primary-hover shadow",
+    danger:
+      "bg-danger-container text-on-danger-container hover:border-danger hover:bg-danger-container",
+    null: "bg-surface-container hover:bg-surface-container-high",
+  }[props.type ?? "null"];
+  const borderClass = props.bordered ? "border border-outline-variant" : "";
+  const shadowClass = props.shadow ? "shadow" : "";
+
   return (
     <button
       className={clsx(
-        "clickable",
-        styles["icon-button"],
-        {
-          [styles.border]: props.bordered,
-          [styles.shadow]: props.shadow,
-        },
-        styles[props.type ?? ""],
+        baseClasses,
+        typeClasses,
+        borderClass,
+        shadowClass,
         props.className,
       )}
       onClick={props.onClick}
@@ -45,21 +52,19 @@ export function IconButton(props: {
       {props.icon && (
         <div
           aria-label={props.text || props.title}
-          className={clsx(styles["icon-button-icon"], {
-            "no-dark": props.type === "primary",
-          })}
+          className={clsx(
+            "flex h-4 w-4 shrink-0 items-center justify-center [&>img]:h-4 [&>img]:w-4 [&>svg]:h-4 [&>svg]:w-4 [&>svg]:shrink-0",
+            {
+              "no-dark": props.type === "primary",
+            },
+          )}
         >
           {props.icon}
         </div>
       )}
 
       {props.text && (
-        <div
-          aria-label={props.text || props.title}
-          className={styles["icon-button-text"]}
-        >
-          {props.text}
-        </div>
+        <span aria-label={props.text || props.title}>{props.text}</span>
       )}
     </button>
   );

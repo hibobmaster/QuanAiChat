@@ -1,6 +1,6 @@
-import chatStyles from "@/app/components/chat.module.scss";
-import styles from "@/app/components/sd/sd.module.scss";
-import homeStyles from "@/app/components/home.module.scss";
+import chatStyles from "@/app/components/chat.module.css";
+import styles from "@/app/components/sd/sd.module.css";
+import homeStyles from "@/app/components/home.module.css";
 
 import { IconButton } from "@/app/components/button";
 import ReturnIcon from "@/app/icons/return.svg";

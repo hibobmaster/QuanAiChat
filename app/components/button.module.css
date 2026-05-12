@@ -1,0 +1,84 @@
+.icon-button {
+  background-color: var(--surface-container-high);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  user-select: none;
+  outline: none;
+  border: 1px solid transparent;
+  color: var(--on-surface);
+  min-height: 40px;
+  box-sizing: border-box;
+}
+.icon-button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.icon-button.primary {
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+.icon-button.primary:not([disabled]):hover,
+.icon-button.primary:not([disabled]):focus {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  border-color: var(--primary);
+}
+.icon-button.primary path {
+  fill: var(--on-primary) !important;
+}
+.icon-button.danger {
+  color: var(--danger);
+  border-color: transparent;
+  background-color: var(--danger-container);
+}
+.icon-button.danger:not([disabled]):hover {
+  border-color: var(--danger);
+  background-color: var(--danger-container);
+}
+.icon-button.danger path {
+  fill: var(--danger) !important;
+}
+.icon-button:not([disabled]):hover,
+.icon-button:not([disabled]):focus {
+  border-color: var(--primary);
+  background-color: var(--surface-container-highest);
+}
+
+.shadow {
+  box-shadow: var(--card-shadow);
+}
+
+.border {
+  border: var(--border-in-light);
+}
+
+.icon-button-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .icon-button {
+    padding: 16px;
+    min-height: 48px;
+  }
+}
+.icon-button-text {
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.icon-button-text:not(:first-child) {
+  margin-left: 6px;
+}

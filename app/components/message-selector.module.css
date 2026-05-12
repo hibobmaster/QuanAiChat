@@ -1,0 +1,68 @@
+.message-selector .message-filter {
+  display: flex;
+}
+.message-selector .message-filter .search-bar {
+  max-width: unset;
+  flex-grow: 1;
+  margin-right: 10px;
+}
+.message-selector .message-filter .actions {
+  display: flex;
+}
+.message-selector .message-filter .actions button:not(:last-child) {
+  margin-right: 10px;
+}
+@media screen and (max-width: 600px) {
+  .message-selector .message-filter {
+    flex-direction: column;
+  }
+  .message-selector .message-filter .search-bar {
+    margin-right: 0;
+  }
+  .message-selector .message-filter .actions {
+    margin-top: 20px;
+  }
+  .message-selector .message-filter .actions button {
+    flex-grow: 1;
+  }
+}
+.message-selector .messages {
+  margin-top: 20px;
+  border-radius: 10px;
+  border: var(--border-in-light);
+  overflow: hidden;
+}
+.message-selector .messages .message {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.message-selector .messages .message-selected {
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+.message-selector .messages .message:not(:last-child) {
+  border-bottom: var(--border-in-light);
+}
+.message-selector .messages .message .avatar {
+  margin-right: 10px;
+}
+.message-selector .messages .message .body {
+  flex: 1;
+  max-width: calc(100% - 80px);
+}
+.message-selector .messages .message .body .date {
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.5;
+}
+.message-selector .messages .message .body .content {
+  font-size: 12px;
+}
+.message-selector .messages .message .checkbox {
+  display: flex;
+  justify-content: flex-end;
+  flex: 1;
+}

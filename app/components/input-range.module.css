@@ -6,8 +6,7 @@
   display: flex;
   justify-content: space-between;
   max-width: 40%;
-
-  input[type="range"] {
-    max-width: calc(100% - 34px);
-  }
+}
+.input-range input[type="range"] {
+  max-width: calc(100% - 34px);
 }

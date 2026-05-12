@@ -1,7 +1,7 @@
 import { IconButton } from "./button";
 import { ErrorBoundary } from "./error";
 
-import styles from "./mask.module.scss";
+import styles from "./mask.module.css";
 
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -36,7 +36,7 @@ import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
 import { useNavigate } from "react-router-dom";
 
-import chatStyle from "./chat.module.scss";
+import chatStyle from "./chat.module.css";
 import { useState } from "react";
 import {
   copyToClipboard,
@@ -492,7 +492,7 @@ export function MaskPage() {
         if (importMasks.name) {
           maskStore.create(importMasks);
         }
-      } catch { }
+      } catch {}
     });
   };
 
@@ -589,8 +589,9 @@ export function MaskPage() {
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{m.name}</div>
                     <div className={clsx(styles["mask-info"], "one-line")}>
-                      {`${Locale.Mask.Item.Info(m.context.length)} / ${ALL_LANG_OPTIONS[m.lang]
-                        } / ${m.modelConfig.model}`}
+                      {`${Locale.Mask.Item.Info(m.context.length)} / ${
+                        ALL_LANG_OPTIONS[m.lang]
+                      } / ${m.modelConfig.model}`}
                     </div>
                   </div>
                 </div>

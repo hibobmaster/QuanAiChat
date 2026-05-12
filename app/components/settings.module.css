@@ -1,0 +1,87 @@
+.settings {
+  padding: 20px;
+  overflow: auto;
+}
+
+@media screen and (max-width: 600px) {
+  .settings {
+    padding: 12px;
+  }
+}
+
+.avatar {
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.edit-prompt-modal {
+  display: flex;
+  flex-direction: column;
+}
+.edit-prompt-modal .edit-prompt-title {
+  max-width: unset;
+  margin-bottom: 20px;
+  text-align: left;
+}
+.edit-prompt-modal .edit-prompt-content {
+  max-width: unset;
+}
+
+.user-prompt-modal {
+  min-height: 40vh;
+}
+.user-prompt-modal .user-prompt-search {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 10px;
+  background-color: var(--surface-container-high);
+  color: var(--on-surface);
+}
+.user-prompt-modal .user-prompt-list {
+  border: var(--border-in-light);
+  border-radius: 10px;
+}
+.user-prompt-modal .user-prompt-list .user-prompt-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+.user-prompt-modal .user-prompt-list .user-prompt-item:not(:last-child) {
+  border-bottom: var(--border-in-light);
+}
+.user-prompt-modal .user-prompt-list .user-prompt-item .user-prompt-header {
+  max-width: calc(100% - 100px);
+}
+.user-prompt-modal
+  .user-prompt-list
+  .user-prompt-item
+  .user-prompt-header
+  .user-prompt-title {
+  font-size: 14px;
+  line-height: 2;
+  font-weight: bold;
+}
+.user-prompt-modal
+  .user-prompt-list
+  .user-prompt-item
+  .user-prompt-header
+  .user-prompt-content {
+  font-size: 12px;
+}
+.user-prompt-modal .user-prompt-list .user-prompt-item .user-prompt-buttons {
+  display: flex;
+  align-items: center;
+  column-gap: 2px;
+}
+.user-prompt-modal
+  .user-prompt-list
+  .user-prompt-item
+  .user-prompt-buttons
+  .user-prompt-button {
+  padding: 7px;
+}
+
+.subtitle-button button {
+  overflow: visible;
+}

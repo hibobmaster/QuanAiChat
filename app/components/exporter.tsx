@@ -1,6 +1,6 @@
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
-import styles from "./exporter.module.scss";
+import styles from "./exporter.module.css";
 import {
   List,
   ListItem,

@@ -42,7 +42,7 @@ describe("audio feature removal", () => {
   test("does not keep audio rendering in chat or markdown", () => {
     const chatStore = read("app/store/chat.ts");
     const chat = read("app/components/chat.tsx");
-    const chatStyles = read("app/components/chat.module.scss");
+    const chatStyles = read("app/components/chat.module.css");
     const markdown = read("app/components/markdown.tsx");
 
     expect(chatStore).not.toContain("audio_url");

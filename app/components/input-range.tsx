@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "./input-range.module.scss";
+import styles from "./input-range.module.css";
 import clsx from "clsx";
 
 interface InputRangeProps {

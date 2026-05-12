@@ -1,5 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
-import styles from "./ui-lib.module.scss";
+import styles from "./ui-lib.module.css";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
+import * as SelectPrimitive from "@radix-ui/react-select";
+import * as ToastPrimitive from "@radix-ui/react-toast";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 import EyeIcon from "../icons/eye.svg";
@@ -15,7 +18,6 @@ import Locale from "../locales";
 import { createRoot } from "react-dom/client";
 import React, {
   CSSProperties,
-  HTMLProps,
   MouseEvent,
   useEffect,
   useState,
@@ -33,19 +35,35 @@ export function Popover(props: {
   onClose?: () => void;
 }) {
   return (
-    <div className={styles.popover}>
-      {props.children}
-      {props.open && (
-        <div className={styles["popover-mask"]} onClick={props.onClose}></div>
-      )}
-      {props.open && (
-        <div className={styles["popover-content"]}>{props.content}</div>
-      )}
-    </div>
+    <PopoverPrimitive.Root
+      open={props.open}
+      onOpenChange={(open) => {
+        if (!open) {
+          props.onClose?.();
+        }
+      }}
+    >
+      <PopoverPrimitive.Anchor asChild>
+        <div className={styles.popover}>{props.children}</div>
+      </PopoverPrimitive.Anchor>
+      <PopoverPrimitive.Portal>
+        <PopoverPrimitive.Content
+          align="end"
+          sideOffset={12}
+          collisionPadding={12}
+          className={styles["popover-content"]}
+        >
+          {props.content}
+        </PopoverPrimitive.Content>
+      </PopoverPrimitive.Portal>
+    </PopoverPrimitive.Root>
   );
 }
 
-export function Card(props: { children: React.ReactNode[]; className?: string }) {
+export function Card(props: {
+  children: React.ReactNode[];
+  className?: string;
+}) {
   return (
     <div className={clsx(styles.card, props.className)}>{props.children}</div>
   );
@@ -120,61 +138,63 @@ interface ModalProps {
   onClose?: () => void;
 }
 export function Modal(props: ModalProps) {
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        props.onClose?.();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [isMax, setMax] = useState(!!props.defaultMax);
 
   return (
-    <div
-      className={clsx(styles["modal-container"], {
-        [styles["modal-container-max"]]: isMax,
-      })}
+    <DialogPrimitive.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) {
+          props.onClose?.();
+        }
+      }}
     >
-      <div className={styles["modal-header"]}>
-        <div className={styles["modal-title"]}>{props.title}</div>
+      <DialogPrimitive.Content
+        aria-describedby={undefined}
+        className={clsx(styles["modal-container"], {
+          [styles["modal-container-max"]]: isMax,
+        })}
+      >
+        <div className={styles["modal-header"]}>
+          <DialogPrimitive.Title className={styles["modal-title"]}>
+            {props.title}
+          </DialogPrimitive.Title>
 
-        <div className={styles["modal-header-actions"]}>
-          <div
-            className={styles["modal-header-action"]}
-            onClick={() => setMax(!isMax)}
-          >
-            {isMax ? <MinIcon /> : <MaxIcon />}
-          </div>
-          <div
-            className={styles["modal-header-action"]}
-            onClick={props.onClose}
-          >
-            <CloseIcon />
+          <div className={styles["modal-header-actions"]}>
+            <button
+              type="button"
+              aria-label={isMax ? "Restore modal size" : "Maximize modal"}
+              className={styles["modal-header-action"]}
+              onClick={() => setMax(!isMax)}
+            >
+              {isMax ? <MinIcon /> : <MaxIcon />}
+            </button>
+            <DialogPrimitive.Close asChild>
+              <button
+                type="button"
+                aria-label={Locale.UI.Close}
+                className={styles["modal-header-action"]}
+              >
+                <CloseIcon />
+              </button>
+            </DialogPrimitive.Close>
           </div>
         </div>
-      </div>
 
-      <div className={styles["modal-content"]}>{props.children}</div>
+        <div className={styles["modal-content"]}>{props.children}</div>
 
-      <div className={styles["modal-footer"]}>
-        {props.footer}
-        <div className={styles["modal-actions"]}>
-          {props.actions?.map((action, i) => (
-            <div key={i} className={styles["modal-action"]}>
-              {action}
-            </div>
-          ))}
+        <div className={styles["modal-footer"]}>
+          {props.footer}
+          <div className={styles["modal-actions"]}>
+            {props.actions?.map((action, i) => (
+              <div key={i} className={styles["modal-action"]}>
+                {action}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </DialogPrimitive.Content>
+    </DialogPrimitive.Root>
   );
 }
 
@@ -205,27 +225,43 @@ export type ToastProps = {
     text: string;
     onClick: () => void;
   };
+  delay?: number;
   onClose?: () => void;
 };
 
 export function Toast(props: ToastProps) {
+  const [open, setOpen] = useState(true);
+
   return (
-    <div className={styles["toast-container"]}>
-      <div className={styles["toast-content"]}>
+    <ToastPrimitive.Provider duration={props.delay}>
+      <ToastPrimitive.Root
+        open={open}
+        className={styles["toast-content"]}
+        onOpenChange={(nextOpen) => {
+          setOpen(nextOpen);
+
+          if (!nextOpen) {
+            props.onClose?.();
+          }
+        }}
+      >
         <span>{props.content}</span>
         {props.action && (
-          <button
-            onClick={() => {
-              props.action?.onClick?.();
-              props.onClose?.();
-            }}
-            className={styles["toast-action"]}
-          >
-            {props.action.text}
-          </button>
+          <ToastPrimitive.Action asChild altText={props.action.text}>
+            <button
+              onClick={() => {
+                props.action?.onClick?.();
+                setOpen(false);
+              }}
+              className={styles["toast-action"]}
+            >
+              {props.action.text}
+            </button>
+          </ToastPrimitive.Action>
         )}
-      </div>
-    </div>
+      </ToastPrimitive.Root>
+      <ToastPrimitive.Viewport className={styles["toast-container"]} />
+    </ToastPrimitive.Provider>
   );
 }
 
@@ -235,24 +271,17 @@ export function showToast(
   delay = 3000,
 ) {
   const div = document.createElement("div");
-  div.className = styles.show;
   document.body.appendChild(div);
 
   const root = createRoot(div);
   const close = () => {
-    div.classList.add(styles.hide);
-
-    setTimeout(() => {
-      root.unmount();
-      div.remove();
-    }, 300);
+    root.unmount();
+    div.remove();
   };
 
-  setTimeout(() => {
-    close();
-  }, delay);
-
-  root.render(<Toast content={content} action={action} onClose={close} />);
+  root.render(
+    <Toast content={content} action={action} delay={delay} onClose={close} />,
+  );
 }
 
 export type InputProps = Omit<React.ComponentProps<"textarea">, "ref"> & {
@@ -306,22 +335,156 @@ export function Select(
     align?: "left" | "center";
   },
 ) {
-  const { className, children, align, ...otherProps } = props;
-  return (
-    <div
-      className={clsx(
-        styles["select-with-icon"],
+  const {
+    className,
+    children,
+    align,
+    value,
+    defaultValue,
+    disabled,
+    name,
+    onChange,
+    ...otherProps
+  } = props;
+  type SelectOption = {
+    value: string;
+    label: React.ReactNode;
+    disabled?: boolean;
+  };
+  type SelectGroup = {
+    label?: React.ReactNode;
+    options: SelectOption[];
+  };
+  const groups: SelectGroup[] = React.Children.toArray(children).flatMap(
+    (child, index): SelectGroup[] => {
+      if (!React.isValidElement(child)) {
+        return [];
+      }
+
+      if (child.type === "optgroup") {
+        const groupProps =
+          child.props as React.OptgroupHTMLAttributes<HTMLOptGroupElement>;
+        const options = React.Children.toArray(groupProps.children).flatMap(
+          (option) => {
+            if (!React.isValidElement(option) || option.type !== "option") {
+              return [];
+            }
+
+            const optionProps =
+              option.props as React.OptionHTMLAttributes<HTMLOptionElement>;
+
+            return [
+              {
+                value: String(optionProps.value ?? optionProps.children ?? ""),
+                label: optionProps.children,
+                disabled: optionProps.disabled,
+              },
+            ];
+          },
+        );
+
+        return [{ label: groupProps.label ?? String(index), options }];
+      }
+
+      if (child.type !== "option") {
+        return [];
+      }
+
+      const optionProps =
+        child.props as React.OptionHTMLAttributes<HTMLOptionElement>;
+
+      return [
         {
-          [styles["left-align-option"]]: align === "left",
+          label: undefined,
+          options: [
+            {
+              value: String(optionProps.value ?? optionProps.children ?? ""),
+              label: optionProps.children,
+              disabled: optionProps.disabled,
+            },
+          ],
         },
-        className,
-      )}
+      ];
+    },
+  );
+  const flatOptions = groups.flatMap((group) => group.options);
+  const selectedValue = value == null ? undefined : String(value);
+  const initialValue =
+    defaultValue == null ? flatOptions[0]?.value : String(defaultValue);
+  const hiddenValue = selectedValue ?? initialValue ?? "";
+
+  const handleValueChange = (nextValue: string) => {
+    onChange?.({
+      target: { value: nextValue },
+      currentTarget: { value: nextValue },
+    } as React.ChangeEvent<HTMLSelectElement>);
+  };
+
+  return (
+    <SelectPrimitive.Root
+      value={selectedValue}
+      defaultValue={initialValue}
+      disabled={disabled}
+      onValueChange={handleValueChange}
     >
-      <select className={styles["select-with-icon-select"]} {...otherProps}>
-        {children}
-      </select>
-      <DownIcon className={styles["select-with-icon-icon"]} />
-    </div>
+      <div
+        className={clsx(
+          styles["select-with-icon"],
+          {
+            [styles["left-align-option"]]: align === "left",
+          },
+          className,
+        )}
+      >
+        {name && <input type="hidden" name={name} value={hiddenValue} />}
+        <SelectPrimitive.Trigger
+          aria-label={otherProps["aria-label"]}
+          className={styles["select-with-icon-select"]}
+        >
+          <SelectPrimitive.Value
+            placeholder={
+              (otherProps as { placeholder?: React.ReactNode }).placeholder ??
+              flatOptions[0]?.label
+            }
+          />
+          <SelectPrimitive.Icon asChild>
+            <DownIcon className={styles["select-with-icon-icon"]} />
+          </SelectPrimitive.Icon>
+        </SelectPrimitive.Trigger>
+      </div>
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Content
+          position="popper"
+          align={align === "left" ? "start" : "center"}
+          collisionPadding={12}
+          className={styles["select-content"]}
+        >
+          <SelectPrimitive.Viewport className={styles["select-viewport"]}>
+            {groups.map((group, groupIndex) => (
+              <SelectPrimitive.Group key={groupIndex}>
+                {group.label && (
+                  <SelectPrimitive.Label className={styles["select-label"]}>
+                    {group.label}
+                  </SelectPrimitive.Label>
+                )}
+                {group.options.map((option) => (
+                  <SelectPrimitive.Item
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled}
+                    className={styles["select-item"]}
+                  >
+                    <SelectPrimitive.ItemText>
+                      {option.label}
+                    </SelectPrimitive.ItemText>
+                  </SelectPrimitive.Item>
+                ))}
+              </SelectPrimitive.Group>
+            ))}
+          </SelectPrimitive.Viewport>
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Portal>
+    </SelectPrimitive.Root>
   );
 }
 
@@ -514,46 +677,62 @@ export function Selector<T>(props: {
   };
 
   return (
-    <div className={styles["selector"]} onClick={() => props.onClose?.()}>
-      <div className={styles["selector-content"]}>
-        <List>
-          {props.items.map((item, i) => {
-            const selected = selectedValues.includes(item.value);
-            return (
-              <ListItem
-                className={clsx(styles["selector-item"], {
-                  [styles["selector-item-disabled"]]: item.disable,
-                })}
-                key={i}
-                title={item.title}
-                subTitle={item.subTitle}
-                icon={<Avatar model={item.value as string} />}
-                onClick={(e) => {
-                  if (item.disable) {
-                    e.stopPropagation();
-                  } else {
-                    handleSelection(e, item.value);
-                  }
-                }}
-              >
-                {selected ? (
-                  <div
-                    style={{
-                      height: 10,
-                      width: 10,
-                      backgroundColor: "var(--primary)",
-                      borderRadius: 10,
-                    }}
-                  ></div>
-                ) : (
-                  <></>
-                )}
-              </ListItem>
-            );
-          })}
-        </List>
-      </div>
-    </div>
+    <DialogPrimitive.Root
+      open
+      onOpenChange={(open) => {
+        if (!open) {
+          props.onClose?.();
+        }
+      }}
+    >
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className={styles["selector"]} />
+        <DialogPrimitive.Content
+          aria-describedby={undefined}
+          className={styles["selector-content"]}
+        >
+          <DialogPrimitive.Title className={styles["sr-only"]}>
+            Select an option
+          </DialogPrimitive.Title>
+          <List>
+            {props.items.map((item, i) => {
+              const selected = selectedValues.includes(item.value);
+              return (
+                <ListItem
+                  className={clsx(styles["selector-item"], {
+                    [styles["selector-item-disabled"]]: item.disable,
+                  })}
+                  key={i}
+                  title={item.title}
+                  subTitle={item.subTitle}
+                  icon={<Avatar model={item.value as string} />}
+                  onClick={(e) => {
+                    if (item.disable) {
+                      e.stopPropagation();
+                    } else {
+                      handleSelection(e, item.value);
+                    }
+                  }}
+                >
+                  {selected ? (
+                    <div
+                      style={{
+                        height: 10,
+                        width: 10,
+                        backgroundColor: "var(--primary)",
+                        borderRadius: 10,
+                      }}
+                    ></div>
+                  ) : (
+                    <></>
+                  )}
+                </ListItem>
+              );
+            })}
+          </List>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 }
 export function FullScreen(props: any) {

@@ -20,7 +20,7 @@ import { Modal, showToast } from "./ui-lib";
 import { copyToClipboard, downloadAs } from "../utils";
 import { Path, ApiPath, REPO_URL } from "@/app/constant";
 import { Loading } from "./home";
-import styles from "./artifacts.module.scss";
+import styles from "./artifacts.module.css";
 
 type HTMLPreviewProps = {
   code: string;

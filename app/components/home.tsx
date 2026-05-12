@@ -3,10 +3,7 @@
 require("../polyfill");
 
 import { useEffect, useState } from "react";
-import styles from "./home.module.scss";
-
-import BotIcon from "../icons/bot.svg";
-import LoadingIcon from "../icons/three-dots.svg";
+import { Bot, Loader2 } from "lucide-react";
 
 import { getCSSVar, useMobileScreen } from "../utils";
 
@@ -33,9 +30,13 @@ import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
-    <div className={clsx("no-dark", styles["loading-content"])}>
-      {!props.noLogo && <BotIcon />}
-      <LoadingIcon />
+    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
+      {!props.noLogo && (
+        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-container">
+          <Bot className="w-6 h-6 text-primary" />
+        </div>
+      )}
+      <Loader2 className="w-6 h-6 text-primary animate-spin" />
     </div>
   );
 }
@@ -91,8 +92,8 @@ export function useSwitchTheme() {
     );
 
     if (config.theme === "auto") {
-      metaDescriptionDark?.setAttribute("content", "#151515");
-      metaDescriptionLight?.setAttribute("content", "#fafafa");
+      metaDescriptionDark?.setAttribute("content", "#141b19");
+      metaDescriptionLight?.setAttribute("content", "#f0f4f2");
     } else {
       const themeColor = getCSSVar("--theme-color");
       metaDescriptionDark?.setAttribute("content", themeColor);
@@ -123,26 +124,14 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
-const loadAsyncGoogleFont = () => {
-  const linkEl = document.createElement("link");
-  const proxyFontUrl = "/google-fonts";
-  const remoteFontUrl = "https://fonts.googleapis.com";
-  const googleFontUrl =
-    getClientConfig()?.buildMode === "export" ? remoteFontUrl : proxyFontUrl;
-  linkEl.rel = "stylesheet";
-  linkEl.href =
-    googleFontUrl +
-    "/css2?family=" +
-    encodeURIComponent("Noto Sans:wght@300;400;700;900") +
-    "&display=swap";
-  document.head.appendChild(linkEl);
-};
-
 export function WindowContent(props: { children: React.ReactNode }) {
   return (
-    <div className={styles["window-content"]} id={SlotID.AppBody}>
+    <main
+      className="flex-1 h-full flex flex-col overflow-hidden"
+      id={SlotID.AppBody}
+    >
       {props?.children}
-    </div>
+    </main>
   );
 }
 
@@ -159,10 +148,6 @@ function Screen() {
   const shouldTightBorder =
     getClientConfig()?.isApp || (config.tightBorder && !isMobileScreen);
 
-  useEffect(() => {
-    loadAsyncGoogleFont();
-  }, []);
-
   if (isArtifact) {
     return (
       <Routes>
@@ -170,6 +155,7 @@ function Screen() {
       </Routes>
     );
   }
+
   const renderContent = () => {
     if (isAuth) return <AuthPage />;
     if (isSd) return <Sd />;
@@ -178,7 +164,8 @@ function Screen() {
       <>
         <SideBar
           className={clsx({
-            [styles["sidebar-show"]]: isHome,
+            "max-md:translate-x-0": isHome,
+            "max-md:-translate-x-full": !isHome,
           })}
         />
         <WindowContent>
@@ -196,9 +183,13 @@ function Screen() {
 
   return (
     <div
-      className={clsx(styles.container, {
-        [styles["tight-container"]]: shouldTightBorder,
-      })}
+      className={clsx(
+        "h-full w-full flex overflow-hidden",
+        "bg-surface text-on-surface",
+        !shouldTightBorder &&
+          "rounded-lg border border-outline-variant shadow-floating",
+        shouldTightBorder && "app-container-fluid",
+      )}
     >
       {renderContent()}
     </div>
@@ -215,7 +206,6 @@ export function useLoadData() {
       const models = await api.llm.models();
       config.mergeModels(models);
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 
@@ -244,7 +234,11 @@ export function Home() {
   }, []);
 
   if (!useHasHydrated()) {
-    return <Loading />;
+    return (
+      <div className="h-dvh w-screen flex items-center justify-center bg-surface-container-low">
+        <Loading />
+      </div>
+    );
   }
 
   return (

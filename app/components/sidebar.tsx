@@ -1,15 +1,13 @@
-import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
+"use client";
 
-import styles from "./home.module.scss";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Settings, Plus, Trash2, Wrench, GripVertical } from "lucide-react";
+import GithubIcon from "../icons/github.svg";
 
 import Image from "next/image";
 import { IconButton } from "./button";
-import SettingsIcon from "../icons/settings.svg";
-import GithubIcon from "../icons/github.svg";
-import AddIcon from "../icons/add.svg";
-import DeleteIcon from "../icons/delete.svg";
-import McpIcon from "../icons/mcp.svg";
-import DragIcon from "../icons/drag.svg";
+
 import QuanAiLogo from "../../assets/quanai.png";
 
 import Locale from "../locales";
@@ -74,7 +72,6 @@ export function useDragSideBar() {
   };
 
   const onDragStart = (e: MouseEvent) => {
-    // Remembers the initial width each time the mouse is pressed
     startX.current = e.clientX;
     startDragWidth.current = config.sidebarWidth;
     const dragStartTime = Date.now();
@@ -96,11 +93,9 @@ export function useDragSideBar() {
     };
 
     const handleDragEnd = () => {
-      // In useRef the data is non-responsive, so `config.sidebarWidth` can't get the dynamic sidebarWidth
       window.removeEventListener("pointermove", handleDragMove);
       window.removeEventListener("pointerup", handleDragEnd);
 
-      // if user click the drag icon, should toggle the sidebar
       const shouldFireClick = Date.now() - dragStartTime < 300;
       if (shouldFireClick) {
         toggleSideBar();
@@ -129,87 +124,141 @@ export function useDragSideBar() {
   };
 }
 
-export function SideBarContainer(props: {
+interface SideBarContainerProps {
   children: React.ReactNode;
   onDragStart: (e: MouseEvent) => void;
   shouldNarrow: boolean;
   className?: string;
-}) {
+}
+
+export function SideBarContainer({
+  children,
+  className,
+  onDragStart,
+  shouldNarrow,
+}: SideBarContainerProps) {
   const isMobileScreen = useMobileScreen();
   const isIOSMobile = useMemo(
     () => isIOS() && isMobileScreen,
     [isMobileScreen],
   );
-  const { children, className, onDragStart, shouldNarrow } = props;
+
   return (
-    <div
-      className={clsx(styles.sidebar, className, {
-        [styles["narrow-sidebar"]]: shouldNarrow,
-      })}
+    <motion.aside
+      className={clsx(
+        "h-full flex flex-col relative",
+        "bg-surface-container",
+        "border-r border-outline-variant/50",
+        "transition-all duration-200 ease-out",
+        shouldNarrow && "w-16",
+        "max-md:fixed max-md:left-0 max-md:top-0 max-md:z-50",
+        "max-md:w-full max-md:max-w-[280px]",
+        className,
+      )}
       style={{
-        // #3016 disable transition on ios mobile screen
+        width: !shouldNarrow ? "var(--sidebar-width)" : undefined,
         transition: isMobileScreen && isIOSMobile ? "none" : undefined,
       }}
     >
       {children}
-      <div
-        className={styles["sidebar-drag"]}
-        onPointerDown={(e) => onDragStart(e as any)}
-      >
-        <DragIcon />
-      </div>
-    </div>
+      {!isMobileScreen && (
+        <div
+          className="absolute top-0 right-0 h-full w-3 cursor-ew-resize group flex items-center justify-center"
+          onPointerDown={(e) => onDragStart(e as unknown as MouseEvent)}
+        >
+          <GripVertical className="w-3 h-3 text-on-surface-variant/0 group-hover:text-on-surface-variant/50 transition-colors" />
+        </div>
+      )}
+    </motion.aside>
   );
 }
 
-export function SideBarHeader(props: {
+interface SideBarHeaderProps {
   title?: string | React.ReactNode;
   subTitle?: string | React.ReactNode;
   logo?: React.ReactNode;
   children?: React.ReactNode;
   shouldNarrow?: boolean;
-}) {
-  const { title, subTitle, logo, children, shouldNarrow } = props;
+}
+
+export function SideBarHeader({
+  title,
+  subTitle,
+  logo,
+  children,
+  shouldNarrow,
+}: SideBarHeaderProps) {
   return (
-    <Fragment>
+    <>
       <div
-        className={clsx(styles["sidebar-header"], {
-          [styles["sidebar-header-narrow"]]: shouldNarrow,
-        })}
+        className={clsx(
+          "flex items-center gap-3 px-4 py-4",
+          "border-b border-outline-variant/30",
+          shouldNarrow && "justify-center px-2",
+        )}
       >
-        <div className={styles["sidebar-title-container"]}>
-          <div className={styles["sidebar-title"]}>{title}</div>
-          <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
+        {!shouldNarrow && (
+          <div className="flex flex-col flex-1 min-w-0">
+            <div className="text-base font-semibold text-on-surface truncate">
+              {title}
+            </div>
+            <div className="text-xs text-on-surface-variant truncate">
+              {subTitle}
+            </div>
+          </div>
+        )}
+        <div
+          className={clsx(
+            "flex-shrink-0",
+            shouldNarrow && "flex justify-center w-full",
+          )}
+        >
+          {logo}
         </div>
-        <div className={clsx(styles["sidebar-logo"], "no-dark")}>{logo}</div>
       </div>
       {children}
-    </Fragment>
+    </>
   );
 }
 
-export function SideBarBody(props: {
+interface SideBarBodyProps {
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-}) {
-  const { onClick, children } = props;
+}
+
+export function SideBarBody({ onClick, children }: SideBarBodyProps) {
   return (
-    <div className={styles["sidebar-body"]} onClick={onClick}>
+    <div
+      className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-2"
+      onClick={onClick}
+    >
       {children}
     </div>
   );
 }
 
-export function SideBarTail(props: {
+interface SideBarTailProps {
   primaryAction?: React.ReactNode;
   secondaryAction?: React.ReactNode;
-}) {
-  const { primaryAction, secondaryAction } = props;
+  narrow?: boolean;
+}
 
+export function SideBarTail({
+  primaryAction,
+  secondaryAction,
+  narrow,
+}: SideBarTailProps) {
   return (
-    <div className={styles["sidebar-tail"]}>
-      <div className={styles["sidebar-actions"]}>{primaryAction}</div>
-      <div className={styles["sidebar-actions"]}>{secondaryAction}</div>
+    <div
+      className={clsx(
+        "flex items-center justify-between gap-2 border-t border-outline-variant/30 px-3 py-3",
+        narrow && "flex-col-reverse",
+      )}
+    >
+      <div className={clsx("flex items-center gap-2", narrow && "flex-col")}>
+        {primaryAction}
+      </div>
+      <div className="flex items-center">{secondaryAction}</div>
     </div>
   );
 }
@@ -218,12 +267,10 @@ export function SideBar(props: { className?: string }) {
   useHotKey();
   const { onDragStart, shouldNarrow } = useDragSideBar();
   const navigate = useNavigate();
-  const config = useAppConfig();
   const chatStore = useChatStore();
   const [mcpEnabled, setMcpEnabled] = useState(false);
 
   useEffect(() => {
-    // 检查 MCP 是否启用
     const checkMcpStatus = async () => {
       const enabled = await isMcpEnabled();
       setMcpEnabled(enabled);
@@ -242,30 +289,32 @@ export function SideBar(props: { className?: string }) {
         title="QuanAiChat"
         subTitle="quanquan.space 公益 GPT 服務"
         logo={
-          <Image
-            src={QuanAiLogo}
-            alt="QuanAiChat logo"
-            width={64}
-            height={64}
-            className={styles["sidebar-logo-image"]}
-            priority
-          />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-container-high shadow-sm">
+            <Image
+              src={QuanAiLogo}
+              alt="QuanAiChat logo"
+              width={28}
+              height={28}
+              className="h-7 w-7 rounded-lg object-contain"
+              priority
+            />
+          </div>
         }
         shouldNarrow={shouldNarrow}
       >
-        <div className={styles["sidebar-header-bar"]}>
-          {mcpEnabled && (
-            <IconButton
-              icon={<McpIcon />}
-              text={shouldNarrow ? undefined : Locale.Mcp.Name}
-              className={styles["sidebar-bar-button"]}
+        {mcpEnabled && !shouldNarrow && (
+          <div className="px-3 pb-2">
+            <button
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors"
               onClick={() => {
                 navigate(Path.McpMarket, { state: { fromHome: true } });
               }}
-              shadow
-            />
-          )}
-        </div>
+            >
+              <Wrench className="w-4 h-4" />
+              {Locale.Mcp.Name}
+            </button>
+          </div>
+        )}
       </SideBarHeader>
       <SideBarBody
         onClick={(e) => {
@@ -277,11 +326,12 @@ export function SideBar(props: { className?: string }) {
         <ChatList narrow={shouldNarrow} />
       </SideBarBody>
       <SideBarTail
+        narrow={shouldNarrow}
         primaryAction={
           <>
-            <div className={clsx(styles["sidebar-action"], styles.mobile)}>
+            <div className="md:hidden">
               <IconButton
-                icon={<DeleteIcon />}
+                icon={<Trash2 className="w-4 h-4" />}
                 onClick={async () => {
                   if (await showConfirm(Locale.Home.DeleteChat)) {
                     chatStore.deleteSession(chatStore.currentSessionIndex);
@@ -289,36 +339,32 @@ export function SideBar(props: { className?: string }) {
                 }}
               />
             </div>
-            <div className={styles["sidebar-action"]}>
-              <Link to={Path.Settings}>
-                <IconButton
-                  aria={Locale.Settings.Title}
-                  icon={<SettingsIcon />}
-                  shadow
-                />
-              </Link>
-            </div>
-            <div className={styles["sidebar-action"]}>
-              <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-                <IconButton
-                  aria={Locale.Export.MessageFromChatGPT}
-                  icon={<GithubIcon />}
-                  shadow
-                />
-              </a>
-            </div>
+            <Link to={Path.Settings}>
+              <IconButton
+                aria={Locale.Settings.Title}
+                icon={<Settings className="w-4 h-4" />}
+              />
+            </Link>
+            <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+              <IconButton
+                aria="GitHub"
+                icon={<GithubIcon className="w-4 h-4" />}
+              />
+            </a>
           </>
         }
         secondaryAction={
-          <IconButton
-            icon={<AddIcon />}
-            text={shouldNarrow ? undefined : Locale.Home.NewChat}
+          <button
+            className="flex items-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-medium text-on-primary shadow-sm transition-colors hover:bg-primary-hover active:scale-95"
+            aria-label={Locale.Home.NewChat}
             onClick={() => {
               chatStore.newSession();
               navigate(Path.Chat);
             }}
-            shadow
-          />
+          >
+            <Plus className="w-4 h-4" />
+            {!shouldNarrow && <span>{Locale.Home.NewChat}</span>}
+          </button>
         }
       />
     </SideBarContainer>

@@ -1,4 +1,4 @@
-import styles from "./sd-panel.module.scss";
+import styles from "./sd-panel.module.css";
 import React from "react";
 import { Select } from "@/app/components/ui-lib";
 import { IconButton } from "@/app/components/button";

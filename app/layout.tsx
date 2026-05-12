@@ -1,6 +1,6 @@
-import "./styles/globals.scss";
-import "./styles/markdown.scss";
-import "./styles/highlight.scss";
+import "./globals.css";
+import "./styles/markdown.css";
+import "./styles/highlight.css";
 import { getClientConfig } from "./config/client";
 import type { Metadata, Viewport } from "next";
 import { getServerSideConfig } from "./config/server";
@@ -24,8 +24,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
-    { media: "(prefers-color-scheme: dark)", color: "#151515" },
+    { media: "(prefers-color-scheme: light)", color: "#f0f4f2" },
+    { media: "(prefers-color-scheme: dark)", color: "#141b19" },
   ],
 };
 

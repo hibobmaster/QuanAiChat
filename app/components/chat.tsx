@@ -79,7 +79,7 @@ import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
 import { IconButton } from "./button";
-import styles from "./chat.module.scss";
+import styles from "./chat.module.css";
 
 import {
   List,
@@ -292,6 +292,7 @@ export function ChatAction(props: {
   icon: React.ReactNode;
   onClick: () => void;
 }) {
+  const actionRef = useRef<HTMLDivElement>(null);
   const iconRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState({
@@ -300,18 +301,29 @@ export function ChatAction(props: {
   });
 
   function updateWidth() {
-    if (!iconRef.current || !textRef.current) return;
+    if (!actionRef.current || !iconRef.current || !textRef.current) return;
     const getWidth = (dom: HTMLDivElement) => dom.getBoundingClientRect().width;
+    const actionStyle = getComputedStyle(actionRef.current);
+    const actionChrome =
+      Number.parseFloat(actionStyle.paddingLeft) +
+      Number.parseFloat(actionStyle.paddingRight) +
+      Number.parseFloat(actionStyle.borderLeftWidth) +
+      Number.parseFloat(actionStyle.borderRightWidth);
     const textWidth = getWidth(textRef.current);
     const iconWidth = getWidth(iconRef.current);
     setWidth({
-      full: textWidth + iconWidth,
-      icon: iconWidth,
+      full: Math.ceil(textWidth + iconWidth + actionChrome),
+      icon: Math.ceil(iconWidth + actionChrome),
     });
   }
 
+  useEffect(() => {
+    updateWidth();
+  }, [props.text]);
+
   return (
     <div
+      ref={actionRef}
       className={clsx(styles["chat-input-action"], "clickable")}
       onClick={() => {
         props.onClick();
