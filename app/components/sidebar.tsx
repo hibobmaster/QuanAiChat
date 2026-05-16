@@ -306,6 +306,7 @@ export function SideBar(props: { className?: string }) {
                 height={28}
                 className="h-7 w-7 rounded-lg object-contain"
                 priority
+                unoptimized
               />
             </div>
           )
