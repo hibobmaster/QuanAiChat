@@ -255,6 +255,7 @@ export const VISION_MODEL_REGEXES = [/vision/, /gemini-.*/, /vl/i];
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
 
 const googleModels = [
+  "gemini-3.5-flash",
   "gemini-3.1-flash-lite",
   "gemini-3-flash-preview",
   "gemini-2.5-flash",
