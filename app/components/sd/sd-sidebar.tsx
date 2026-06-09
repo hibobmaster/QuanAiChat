@@ -7,7 +7,7 @@ import Locale from "@/app/locales";
 
 import { Path, REPO_URL } from "@/app/constant";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/app/navigation";
 import dynamic from "next/dynamic";
 import {
   SideBarContainer,

@@ -12,7 +12,7 @@ import {
   getMessageTextContent,
   useMobileScreen,
 } from "@/app/utils";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "@/app/navigation";
 import { useAppConfig } from "@/app/store";
 import MinIcon from "@/app/icons/min.svg";
 import MaxIcon from "@/app/icons/max.svg";

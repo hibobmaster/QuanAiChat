@@ -23,7 +23,7 @@ import {
   REPO_URL,
 } from "../constant";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "@/app/navigation";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
 import { showConfirm } from "./ui-lib";
@@ -350,7 +350,7 @@ export function SideBar(props: { className?: string }) {
                 }}
               />
             </div>
-            <Link to={Path.Settings}>
+            <Link href={Path.Settings}>
               <IconButton
                 aria={Locale.Settings.Title}
                 icon={<Settings className="w-4 h-4" />}

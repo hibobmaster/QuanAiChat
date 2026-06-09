@@ -90,7 +90,7 @@ import {
   showPrompt,
   showToast,
 } from "./ui-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/app/navigation";
 import {
   CHAT_PAGE_SIZE,
   Path,

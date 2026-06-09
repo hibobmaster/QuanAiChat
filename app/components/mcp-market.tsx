@@ -9,7 +9,7 @@ import RestartIcon from "../icons/reload.svg";
 import EyeIcon from "../icons/eye.svg";
 import GithubIcon from "../icons/github.svg";
 import { List, ListItem, Modal, showToast } from "./ui-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/app/navigation";
 import { useEffect, useState } from "react";
 import {
   addMcpServer,

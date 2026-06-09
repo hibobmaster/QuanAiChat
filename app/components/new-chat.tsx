@@ -8,7 +8,7 @@ import LeftIcon from "../icons/left.svg";
 import LightningIcon from "../icons/lightning.svg";
 import EyeIcon from "../icons/eye.svg";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "@/app/navigation";
 import { Mask, useMaskStore } from "../store/mask";
 import Locale from "../locales";
 import { useAppConfig, useChatStore } from "../store";
@@ -86,7 +86,7 @@ export function NewChat() {
 
   const maskRef = useRef<HTMLDivElement>(null);
 
-  const { state } = useLocation();
+  const { state } = useLocation<{ fromHome?: boolean }>();
 
   const startChat = (mask?: Mask) => {
     setTimeout(() => {

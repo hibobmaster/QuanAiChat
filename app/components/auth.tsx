@@ -1,7 +1,7 @@
 import styles from "./auth.module.css";
 import { IconButton } from "./button";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/app/navigation";
 import { Path } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
