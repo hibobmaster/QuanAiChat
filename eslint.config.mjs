@@ -50,7 +50,6 @@ export default tseslint.config(
             "unused-imports/no-unused-imports": "warn",
             "react/react-in-jsx-scope": "off",
             "react/prop-types": "off",
-            "@next/next/no-img-element": "off",
 
             // Adjustments for existing codebase
             "@typescript-eslint/no-unused-vars": "warn",

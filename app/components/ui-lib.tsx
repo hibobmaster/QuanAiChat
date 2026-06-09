@@ -631,6 +631,7 @@ export function showImageModal(
     defaultMax: defaultMax,
     children: (
       <div style={{ display: "flex", justifyContent: "center", ...boxStyle }}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- Modal previews render caller-provided blob/data/runtime image URLs that cannot use next/image optimization safely. */}
         <img
           src={img}
           alt="preview"

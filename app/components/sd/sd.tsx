@@ -12,7 +12,7 @@ import {
   getMessageTextContent,
   useMobileScreen,
 } from "@/app/utils";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "@/app/navigation";
 import { useAppConfig } from "@/app/store";
 import MinIcon from "@/app/icons/min.svg";
 import MaxIcon from "@/app/icons/max.svg";
@@ -162,23 +162,26 @@ export function Sd() {
                       className={styles["sd-img-item"]}
                     >
                       {item.status === "success" ? (
-                        <img
-                          className={styles["img"]}
-                          src={item.img_data}
-                          alt={item.id}
-                          onClick={(e) =>
-                            showImageModal(
-                              item.img_data,
-                              true,
-                              isMobileScreen
-                                ? { width: "100%", height: "fit-content" }
-                                : { maxWidth: "100%", maxHeight: "100%" },
-                              isMobileScreen
-                                ? { width: "100%", height: "fit-content" }
-                                : { width: "100%", height: "100%" },
-                            )
-                          }
-                        />
+                        <>
+                          {/* eslint-disable-next-line @next/next/no-img-element -- Generated SD images are runtime data/blob URLs that cannot use next/image optimization safely. */}
+                          <img
+                            className={styles["img"]}
+                            src={item.img_data}
+                            alt={item.id}
+                            onClick={(e) =>
+                              showImageModal(
+                                item.img_data,
+                                true,
+                                isMobileScreen
+                                  ? { width: "100%", height: "fit-content" }
+                                  : { maxWidth: "100%", maxHeight: "100%" },
+                                isMobileScreen
+                                  ? { width: "100%", height: "fit-content" }
+                                  : { width: "100%", height: "100%" },
+                              )
+                            }
+                          />
+                        </>
                       ) : item.status === "error" ? (
                         <div className={styles["pre-img"]}>
                           <ErrorIcon />

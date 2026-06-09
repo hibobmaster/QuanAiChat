@@ -90,7 +90,7 @@ import {
   showPrompt,
   showToast,
 } from "./ui-lib";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/app/navigation";
 import {
   CHAT_PAGE_SIZE,
   Path,
@@ -1757,11 +1757,14 @@ function ChatSession() {
                               defaultShow={i >= messages.length - 6}
                             />
                             {getMessageImages(message).length == 1 && (
-                              <img
-                                className={styles["chat-message-item-image"]}
-                                src={getMessageImages(message)[0]}
-                                alt=""
-                              />
+                              <>
+                                {/* eslint-disable-next-line @next/next/no-img-element -- User-provided message image URLs can be blob/data/runtime sources that cannot use next/image optimization safely. */}
+                                <img
+                                  className={styles["chat-message-item-image"]}
+                                  src={getMessageImages(message)[0]}
+                                  alt=""
+                                />
+                              </>
                             )}
                             {getMessageImages(message).length > 1 && (
                               <div
@@ -1776,16 +1779,18 @@ function ChatSession() {
                                 {getMessageImages(message).map(
                                   (image, index) => {
                                     return (
-                                      <img
-                                        className={
-                                          styles[
-                                            "chat-message-item-image-multi"
-                                          ]
-                                        }
-                                        key={index}
-                                        src={image}
-                                        alt=""
-                                      />
+                                      <Fragment key={index}>
+                                        {/* eslint-disable-next-line @next/next/no-img-element -- User-provided message image URLs can be blob/data/runtime sources that cannot use next/image optimization safely. */}
+                                        <img
+                                          className={
+                                            styles[
+                                              "chat-message-item-image-multi"
+                                            ]
+                                          }
+                                          src={image}
+                                          alt=""
+                                        />
+                                      </Fragment>
                                     );
                                   },
                                 )}

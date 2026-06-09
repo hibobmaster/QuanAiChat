@@ -34,7 +34,7 @@ import {
 } from "./ui-lib";
 import { Avatar, AvatarPicker } from "./emoji";
 import Locale, { AllLangs, ALL_LANG_OPTIONS, Lang } from "../locales";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/app/navigation";
 
 import chatStyle from "./chat.module.css";
 import { useState } from "react";
@@ -95,7 +95,7 @@ export function MaskConfig(props: {
   };
 
   const copyMaskLink = () => {
-    const maskLink = `${location.protocol}//${location.host}/#${Path.NewChat}?mask=${props.mask.id}`;
+    const maskLink = `${location.protocol}//${location.host}${Path.NewChat}?mask=${props.mask.id}`;
     copyToClipboard(maskLink);
   };
 

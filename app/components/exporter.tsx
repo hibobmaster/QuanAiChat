@@ -22,7 +22,7 @@ import LoadingIcon from "../icons/three-dots.svg";
 import ChatGptIcon from "../icons/chatgpt.png";
 
 import DownloadIcon from "../icons/download.svg";
-import { useMemo, useRef, useState } from "react";
+import { Fragment, useMemo, useRef, useState } from "react";
 import { MessageSelector, useMessageSelector } from "./message-selector";
 import { Avatar } from "./emoji";
 import dynamic from "next/dynamic";
@@ -427,12 +427,14 @@ export function ImagePreviewer(props: {
                   defaultShow
                 />
                 {getMessageImages(m).length == 1 && (
-                  <img
-                    key={i}
-                    src={getMessageImages(m)[0]}
-                    alt="message"
-                    className={styles["message-image"]}
-                  />
+                  <Fragment key={i}>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- Exported message previews use user-provided blob/data/runtime image URLs that cannot use next/image optimization safely. */}
+                    <img
+                      src={getMessageImages(m)[0]}
+                      alt="message"
+                      className={styles["message-image"]}
+                    />
+                  </Fragment>
                 )}
                 {getMessageImages(m).length > 1 && (
                   <div
@@ -444,12 +446,14 @@ export function ImagePreviewer(props: {
                     }
                   >
                     {getMessageImages(m).map((src, i) => (
-                      <img
-                        key={i}
-                        src={src}
-                        alt="message"
-                        className={styles["message-image-multi"]}
-                      />
+                      <Fragment key={i}>
+                        {/* eslint-disable-next-line @next/next/no-img-element -- Exported message previews use user-provided blob/data/runtime image URLs that cannot use next/image optimization safely. */}
+                        <img
+                          src={src}
+                          alt="message"
+                          className={styles["message-image-multi"]}
+                        />
+                      </Fragment>
                     ))}
                   </div>
                 )}

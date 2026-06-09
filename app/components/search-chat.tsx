@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ErrorBoundary } from "./error";
 import styles from "./mask.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@/app/navigation";
 import { IconButton } from "./button";
 import CloseIcon from "../icons/close.svg";
 import EyeIcon from "../icons/eye.svg";

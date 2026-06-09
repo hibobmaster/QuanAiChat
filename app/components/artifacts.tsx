@@ -6,7 +6,7 @@ import {
   forwardRef,
   useImperativeHandle,
 } from "react";
-import { useParams } from "next/navigation";
+import { useParams } from "@/app/navigation";
 import { IconButton } from "./button";
 import { nanoid } from "nanoid";
 import ExportIcon from "../icons/share.svg";
@@ -121,7 +121,7 @@ export function ArtifactsShareButton({
   const [name, setName] = useState(id);
   const [show, setShow] = useState(false);
   const shareUrl = useMemo(
-    () => [location.origin, "#", Path.Artifacts, "/", name].join(""),
+    () => [location.origin, Path.Artifacts, "/", name].join(""),
     [name],
   );
   const upload = (code: string) =>

@@ -9,10 +9,10 @@ const en: LocaleType = {
   Error: {
     Unauthorized: isApp
       ? `😆 Oops, there's an issue. No worries:
-     \\ 1️⃣ Want to use your own DeepSeek or Google resources? [Click here](/#/settings) to change settings ⚙️`
+     \\ 1️⃣ Want to use your own DeepSeek or Google resources? [Click here](/settings) to change settings ⚙️`
       : `😆 Oops, there's an issue. Let's fix it:
-     \\ 1️⃣ Using a private setup? [Click here](/#/auth) to enter your key 🔑
-     \\ 2️⃣ Want to use your own DeepSeek or Google resources? [Click here](/#/settings) to change settings ⚙️
+     \\ 1️⃣ Using a private setup? [Click here](/auth) to enter your key 🔑
+     \\ 2️⃣ Want to use your own DeepSeek or Google resources? [Click here](/settings) to change settings ⚙️
      `,
   },
   Auth: {

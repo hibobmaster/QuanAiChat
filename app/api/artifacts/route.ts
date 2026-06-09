@@ -1,8 +1,13 @@
 import md5 from "spark-md5";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "@/app/config/server";
+import { corsPreflight, withCors } from "../cors";
 
 async function handle(req: NextRequest) {
+  if (req.method === "OPTIONS") {
+    return corsPreflight(req);
+  }
+
   const serverConfig = getServerSideConfig();
   const storeUrl = () =>
     `https://api.cloudflare.com/client/v4/accounts/${serverConfig.cloudflareAccountId}/storage/kv/namespaces/${serverConfig.cloudflareKVNamespaceId}`;
@@ -39,14 +44,20 @@ async function handle(req: NextRequest) {
     const result = await res.json();
     console.log("save data", result);
     if (result?.success) {
-      return NextResponse.json(
-        { code: 0, id: hashedCode, result },
-        { status: res.status },
+      return withCors(
+        NextResponse.json(
+          { code: 0, id: hashedCode, result },
+          { status: res.status },
+        ),
+        req,
       );
     }
-    return NextResponse.json(
-      { error: true, msg: "Save data error" },
-      { status: 400 },
+    return withCors(
+      NextResponse.json(
+        { error: true, msg: "Save data error" },
+        { status: 400 },
+      ),
+      req,
     );
   }
   if (req.method === "GET") {
@@ -55,19 +66,23 @@ async function handle(req: NextRequest) {
       headers: storeHeaders(),
       method: "GET",
     });
-    return new Response(res.body, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: res.headers,
-    });
+    return withCors(
+      new Response(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: new Headers(res.headers),
+      }),
+      req,
+    );
   }
-  return NextResponse.json(
-    { error: true, msg: "Invalid request" },
-    { status: 400 },
+  return withCors(
+    NextResponse.json({ error: true, msg: "Invalid request" }, { status: 400 }),
+    req,
   );
 }
 
 export const POST = handle;
 export const GET = handle;
+export const OPTIONS = handle;
 
 export const runtime = "edge";

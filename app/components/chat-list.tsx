@@ -12,7 +12,7 @@ import { useChatStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
 
 import Locale from "../locales";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "@/app/navigation";
 import { Path } from "../constant";
 import { MaskAvatar } from "./mask";
 import { Mask } from "../store/mask";

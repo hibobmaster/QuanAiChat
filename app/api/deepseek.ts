@@ -9,6 +9,7 @@ import { prettyObject } from "@/app/utils/format";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/api/auth";
 import { isModelNotavailableInServer } from "@/app/utils/model";
+import { corsPreflight, withCors } from "./cors";
 
 const serverConfig = getServerSideConfig();
 
@@ -19,22 +20,25 @@ export async function handle(
   console.log("[DeepSeek Route] params ", params);
 
   if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+    return corsPreflight(req);
   }
 
   const authResult = auth(req, ModelProvider.DeepSeek);
   if (authResult.error) {
-    return NextResponse.json(authResult, {
-      status: 401,
-    });
+    return withCors(
+      NextResponse.json(authResult, {
+        status: 401,
+      }),
+      req,
+    );
   }
 
   try {
     const response = await request(req);
-    return response;
+    return withCors(response, req);
   } catch (e) {
     console.error("[DeepSeek] ", e);
-    return NextResponse.json(prettyObject(e));
+    return withCors(NextResponse.json(prettyObject(e)), req);
   }
 }
 

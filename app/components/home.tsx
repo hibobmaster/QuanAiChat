@@ -2,75 +2,33 @@
 
 require("../polyfill");
 
-import { useEffect, useState } from "react";
-import { Bot, Loader2 } from "lucide-react";
+import { Suspense, useEffect, useState } from "react";
 
 import { getCSSVar, useMobileScreen } from "../utils";
 
 import dynamic from "next/dynamic";
+import { usePathname, useRouter } from "next/navigation";
 import { Path, SlotID } from "../constant";
 import { ErrorBoundary } from "./error";
 
 import { getISOLang } from "../locales";
 
-import {
-  HashRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
 import { SideBar } from "./sidebar";
 import { useAppConfig } from "../store/config";
-import { AuthPage } from "./auth";
 import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
+import { AppLoading } from "./app-loading";
 
 export function Loading(props: { noLogo?: boolean }) {
-  return (
-    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
-      {!props.noLogo && (
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-container">
-          <Bot className="w-6 h-6 text-primary" />
-        </div>
-      )}
-      <Loader2 className="w-6 h-6 text-primary animate-spin" />
-    </div>
-  );
+  return <AppLoading {...props} />;
 }
-
-const Artifacts = dynamic(async () => (await import("./artifacts")).Artifacts, {
-  loading: () => <Loading noLogo />,
-});
-
-const Settings = dynamic(async () => (await import("./settings")).Settings, {
-  loading: () => <Loading noLogo />,
-});
 
 const Chat = dynamic(async () => (await import("./chat")).Chat, {
   loading: () => <Loading noLogo />,
 });
-
-const SearchChat = dynamic(
-  async () => (await import("./search-chat")).SearchChatPage,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
-
-const Sd = dynamic(async () => (await import("./sd")).Sd, {
-  loading: () => <Loading noLogo />,
-});
-
-const McpMarketPage = dynamic(
-  async () => (await import("./mcp-market")).McpMarketPage,
-  {
-    loading: () => <Loading noLogo />,
-  },
-);
 
 export function useSwitchTheme() {
   const config = useAppConfig();
@@ -136,33 +94,27 @@ export function WindowContent(props: { children: React.ReactNode }) {
   );
 }
 
-function Screen() {
+export function AppShell(props: { children: React.ReactNode }) {
   const config = useAppConfig();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const isArtifact = location.pathname.includes(Path.Artifacts);
-  const isHome = location.pathname === Path.Home;
-  const isAuth = location.pathname === Path.Auth;
-  const isSd = location.pathname === Path.Sd;
-  const isSdNew = location.pathname === Path.SdNew;
+  const pathname = usePathname();
+  const router = useRouter();
+  const isArtifact = pathname.includes(Path.Artifacts);
+  const isHome = pathname === Path.Home;
+  const isSd = pathname === Path.Sd;
+  const isSdNew = pathname === Path.SdNew;
 
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
     getClientConfig()?.isApp || isMobileScreen || config.tightBorder;
 
   if (isArtifact) {
-    return (
-      <Routes>
-        <Route path="/artifacts/:id" element={<Artifacts />} />
-      </Routes>
-    );
+    return props.children;
   }
 
-  const renderContent = () => {
-    if (isAuth) return <AuthPage />;
-    if (isSd) return <Sd />;
-    if (isSdNew) return <Sd />;
-    return (
+  const content =
+    isSd || isSdNew ? (
+      props.children
+    ) : (
       <>
         <SideBar
           className={clsx({
@@ -175,21 +127,12 @@ function Screen() {
             type="button"
             aria-label="Close chat list"
             className="fixed inset-0 z-40 hidden border-0 bg-black/25 p-0 max-md:block"
-            onClick={() => navigate(Path.Chat)}
+            onClick={() => router.push(Path.Chat)}
           />
         )}
-        <WindowContent>
-          <Routes>
-            <Route path={Path.Home} element={<Chat />} />
-            <Route path={Path.SearchChat} element={<SearchChat />} />
-            <Route path={Path.Chat} element={<Chat />} />
-            <Route path={Path.Settings} element={<Settings />} />
-            <Route path={Path.McpMarket} element={<McpMarketPage />} />
-          </Routes>
-        </WindowContent>
+        <WindowContent>{props.children}</WindowContent>
       </>
     );
-  };
 
   return (
     <div
@@ -201,7 +144,7 @@ function Screen() {
         shouldTightBorder && "app-container-fluid",
       )}
     >
-      {renderContent()}
+      {content}
     </div>
   );
 }
@@ -219,7 +162,7 @@ export function useLoadData() {
   }, []);
 }
 
-export function Home() {
+export function AppProviders(props: { children: React.ReactNode }) {
   useSwitchTheme();
   useLoadData();
   useHtmlLang();
@@ -253,9 +196,19 @@ export function Home() {
 
   return (
     <ErrorBoundary>
-      <Router>
-        <Screen />
-      </Router>
+      <Suspense fallback={<Loading />}>{props.children}</Suspense>
     </ErrorBoundary>
   );
+}
+
+export function ChatRoute() {
+  return (
+    <AppShell>
+      <Chat />
+    </AppShell>
+  );
+}
+
+export function Home() {
+  return <ChatRoute />;
 }
