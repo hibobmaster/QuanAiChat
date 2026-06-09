@@ -5,10 +5,10 @@ import { RotateCcw } from "lucide-react";
 
 export default function Error({
   error,
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   useEffect(() => {
     console.error("[Route Error]", error);
@@ -27,7 +27,7 @@ export default function Error({
         </pre>
         <button
           type="button"
-          onClick={reset}
+          onClick={unstable_retry}
           className="inline-flex items-center gap-2 rounded border border-outline px-3 py-2 text-sm"
         >
           <RotateCcw className="h-4 w-4" />
