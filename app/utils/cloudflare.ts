@@ -15,11 +15,6 @@ export function cloudflareAIGatewayUrl(fetchUrl: string) {
       // is openai gateway
       return paths.slice(0, 7).concat(paths.slice(-2)).join("/"); // rebuild ai gateway openai_url
     }
-    // https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/anthropic/v1/messages \
-    if ("anthropic" == paths[6]) {
-      // is anthropic gateway
-      return paths.slice(0, 7).concat(paths.slice(-2)).join("/"); // rebuild ai gateway anthropic_url
-    }
     // TODO: Amazon Bedrock, Groq, HuggingFace...
   }
   return fetchUrl;

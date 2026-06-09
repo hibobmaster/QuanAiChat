@@ -193,7 +193,7 @@ export const useAppConfig = createPersistStore(
       }
 
       if (version < 3.5) {
-        state.customModels = "claude,claude-100k";
+        state.customModels = "";
       }
 
       if (version < 3.6) {

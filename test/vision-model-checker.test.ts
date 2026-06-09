@@ -22,15 +22,10 @@ describe("isVisionModel", () => {
     });
   });
 
-  test("should exclude specific models", () => {
-    expect(isVisionModel("claude-3-5-haiku-20241022")).toBe(false);
-  });
-
   test("should not identify non-vision models", () => {
     const nonVisionModels = [
       "gpt-3.5-turbo",
       "gpt-4-turbo-preview",
-      "claude-2",
       "regular-model",
     ];
 

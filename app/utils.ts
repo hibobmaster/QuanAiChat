@@ -6,7 +6,7 @@ import {
   REQUEST_TIMEOUT_MS,
   REQUEST_TIMEOUT_MS_FOR_THINKING,
 } from "./constant";
-import { VISION_MODEL_REGEXES, EXCLUDE_VISION_MODEL_REGEXES } from "./constant";
+import { VISION_MODEL_REGEXES } from "./constant";
 import { useAccessStore } from "./store";
 import { ModelSize } from "./typing";
 
@@ -253,10 +253,7 @@ export function isVisionModel(model: string) {
   if (envVisionModels?.includes(model)) {
     return true;
   }
-  return (
-    !EXCLUDE_VISION_MODEL_REGEXES.some((regex) => regex.test(model)) &&
-    VISION_MODEL_REGEXES.some((regex) => regex.test(model))
-  );
+  return VISION_MODEL_REGEXES.some((regex) => regex.test(model));
 }
 
 export function isDalle3(model: string) {

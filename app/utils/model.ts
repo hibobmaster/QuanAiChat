@@ -46,7 +46,7 @@ const sortModelTable = (models: ReturnType<typeof collectModels>) =>
 
 /**
  * get model name and provider from a formatted string,
- * e.g. `gpt-4@OpenAi` or `claude-3-5-sonnet@20240620@Google`
+ * e.g. `gpt-4@OpenAi` or `gemini-2.5-pro@Google`
  * @param modelWithProvider model name with provider separated by last `@` char,
  * @returns [model, provider] tuple, if no `@` char found, provider is undefined
  */

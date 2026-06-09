@@ -10,7 +10,6 @@ import BotIconDefault from "../icons/llm-icons/default.svg";
 import BotIconOpenAI from "../icons/llm-icons/openai.svg";
 import BotIconGemini from "../icons/llm-icons/gemini.svg";
 import BotIconGemma from "../icons/llm-icons/gemma.svg";
-import BotIconClaude from "../icons/llm-icons/claude.svg";
 import BotIconMeta from "../icons/llm-icons/meta.svg";
 import BotIconMistral from "../icons/llm-icons/mistral.svg";
 import BotIconDeepseek from "../icons/llm-icons/deepseek.svg";
@@ -64,8 +63,6 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       LlmIcon = BotIconGemini;
     } else if (modelName.startsWith("gemma")) {
       LlmIcon = BotIconGemma;
-    } else if (modelName.startsWith("claude")) {
-      LlmIcon = BotIconClaude;
     } else if (modelName.includes("llama")) {
       LlmIcon = BotIconMeta;
     } else if (
