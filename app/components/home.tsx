@@ -3,7 +3,6 @@
 require("../polyfill");
 
 import { useEffect, useState } from "react";
-import { Bot, Loader2 } from "lucide-react";
 
 import { getCSSVar, useMobileScreen } from "../utils";
 
@@ -28,18 +27,10 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
+import { AppLoading } from "./app-loading";
 
 export function Loading(props: { noLogo?: boolean }) {
-  return (
-    <div className="flex flex-col items-center justify-center h-full w-full gap-3">
-      {!props.noLogo && (
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-container">
-          <Bot className="w-6 h-6 text-primary" />
-        </div>
-      )}
-      <Loader2 className="w-6 h-6 text-primary animate-spin" />
-    </div>
-  );
+  return <AppLoading {...props} />;
 }
 
 const Artifacts = dynamic(async () => (await import("./artifacts")).Artifacts, {
