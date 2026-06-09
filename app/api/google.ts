@@ -3,6 +3,7 @@ import { auth } from "./auth";
 import { getServerSideConfig } from "@/app/config/server";
 import { ApiPath, GEMINI_BASE_URL, ModelProvider } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
+import { corsPreflight, withCors } from "./cors";
 
 const serverConfig = getServerSideConfig();
 
@@ -13,14 +14,17 @@ export async function handle(
   console.log("[Google Route] params ", params);
 
   if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+    return corsPreflight(req);
   }
 
   const authResult = auth(req, ModelProvider.GeminiPro);
   if (authResult.error) {
-    return NextResponse.json(authResult, {
-      status: 401,
-    });
+    return withCors(
+      NextResponse.json(authResult, {
+        status: 401,
+      }),
+      req,
+    );
   }
 
   const bearToken =
@@ -30,22 +34,25 @@ export async function handle(
   const apiKey = token ? token : serverConfig.googleApiKey;
 
   if (!apiKey) {
-    return NextResponse.json(
-      {
-        error: true,
-        message: `missing GOOGLE_API_KEY in server env vars`,
-      },
-      {
-        status: 401,
-      },
+    return withCors(
+      NextResponse.json(
+        {
+          error: true,
+          message: `missing GOOGLE_API_KEY in server env vars`,
+        },
+        {
+          status: 401,
+        },
+      ),
+      req,
     );
   }
   try {
     const response = await request(req, apiKey);
-    return response;
+    return withCors(response, req);
   } catch (e) {
     console.error("[Google] ", e);
-    return NextResponse.json(prettyObject(e));
+    return withCors(NextResponse.json(prettyObject(e)), req);
   }
 }
 

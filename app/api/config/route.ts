@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { corsPreflight, withCors } from "../cors";
 import { getServerSideConfig } from "../../config/server";
 
 const serverConfig = getServerSideConfig();
@@ -28,19 +29,27 @@ declare global {
 }
 
 async function handle(req: NextRequest) {
+  if (req.method === "OPTIONS") {
+    return corsPreflight(req);
+  }
+
   const authHeader = req.headers.get("authorization") ?? "";
   const hasBasicAuth = authHeader.trim().toLowerCase().startsWith("basic ");
 
   const needCode = hasBasicAuth ? false : DANGER_CONFIG.needCode;
 
-  return NextResponse.json({
-    ...DANGER_CONFIG,
-    needCode,
-    hasBasicAuth,
-  });
+  return withCors(
+    NextResponse.json({
+      ...DANGER_CONFIG,
+      needCode,
+      hasBasicAuth,
+    }),
+    req,
+  );
 }
 
 export const GET = handle;
 export const POST = handle;
+export const OPTIONS = handle;
 
 export const runtime = "edge";

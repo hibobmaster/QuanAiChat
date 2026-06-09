@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "@/app/config/server";
+import { corsPreflight, withCors } from "./cors";
+import { resolveAllowedProxyBaseUrl } from "./proxy-allowlist";
 
 export async function handle(
   req: NextRequest,
@@ -8,18 +10,30 @@ export async function handle(
   console.log("[Proxy Route] params ", params);
 
   if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+    return corsPreflight(req);
   }
   const serverConfig = getServerSideConfig();
+  const allowedBaseUrl = resolveAllowedProxyBaseUrl(
+    req.headers.get("x-base-url"),
+  );
+
+  if (!allowedBaseUrl) {
+    return withCors(
+      NextResponse.json(
+        { error: true, message: "Disallowed proxy upstream" },
+        { status: 400 },
+      ),
+      req,
+    );
+  }
 
   // remove path params from searchParams
   req.nextUrl.searchParams.delete("path");
   req.nextUrl.searchParams.delete("provider");
 
   const subpath = params.path.join("/");
-  const fetchUrl = `${req.headers.get(
-    "x-base-url",
-  )}/${subpath}?${req.nextUrl.searchParams.toString()}`;
+  const fetchUrl = new URL(`/${subpath}`, allowedBaseUrl);
+  fetchUrl.search = req.nextUrl.searchParams.toString();
   const skipHeaders = ["connection", "host", "origin", "referer", "cookie"];
   const headers = new Headers(
     Array.from(req.headers.entries()).filter((item) => {
@@ -34,16 +48,18 @@ export async function handle(
     }),
   );
   // if dalle3 use openai api key
-    const baseUrl = req.headers.get("x-base-url");
-    if (baseUrl?.includes("api.openai.com")) {
-      if (!serverConfig.apiKey) {
-        return NextResponse.json(
+  if (allowedBaseUrl === "https://api.openai.com") {
+    if (!serverConfig.apiKey) {
+      return withCors(
+        NextResponse.json(
           { error: "OpenAI API key not configured" },
           { status: 500 },
-        );
-      }
-      headers.set("Authorization", `Bearer ${serverConfig.apiKey}`);
+        ),
+        req,
+      );
     }
+    headers.set("Authorization", `Bearer ${serverConfig.apiKey}`);
+  }
 
   const controller = new AbortController();
   const fetchOptions: RequestInit = {
@@ -78,11 +94,14 @@ export async function handle(
     // The browser will try to decode the response with brotli and fail
     newHeaders.delete("content-encoding");
 
-    return new Response(res.body, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: newHeaders,
-    });
+    return withCors(
+      new Response(res.body, {
+        status: res.status,
+        statusText: res.statusText,
+        headers: newHeaders,
+      }),
+      req,
+    );
   } finally {
     clearTimeout(timeoutId);
   }
