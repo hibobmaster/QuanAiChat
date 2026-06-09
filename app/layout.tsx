@@ -3,6 +3,7 @@ import "./styles/markdown.css";
 import "./styles/highlight.css";
 import { getClientConfig } from "./config/client";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { getServerSideConfig } from "./config/server";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
     title: "QuanAiChat",
     statusBarStyle: "default",
   },
+  manifest: "/site.webmanifest",
 };
 
 export const viewport: Viewport = {
@@ -47,21 +49,12 @@ export default function RootLayout({
             summaryModel: serverConfig.summaryModel,
           })}
         />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-        />
-        <link
-          rel="manifest"
-          href="/site.webmanifest"
-          crossOrigin="use-credentials"
-        ></link>
-        <script src="/serviceWorkerRegister.js" defer></script>
-        <script
-          async
+        <Script src="/serviceWorkerRegister.js" strategy="beforeInteractive" />
+        <Script
           src="https://analytics.qqs.tw/script.js"
+          strategy="afterInteractive"
           data-website-id="6ac8e216-95c3-495d-8974-ad467b2c7fed"
-        ></script>
+        />
       </head>
       <body>{children}</body>
     </html>
