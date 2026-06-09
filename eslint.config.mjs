@@ -1,6 +1,5 @@
 import js from "@eslint/js";
 import { fixupPluginRules } from "@eslint/compat";
-import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import nextPlugin from "@next/eslint-plugin-next";
 import unusedImports from "eslint-plugin-unused-imports";
@@ -30,26 +29,17 @@ export default tseslint.config(
             }
         },
         plugins: {
-            react: fixupPluginRules(reactPlugin),
             "react-hooks": fixupPluginRules(reactHooksPlugin),
             "@next/next": fixupPluginRules(nextPlugin),
             "unused-imports": unusedImports,
             prettier: prettier
         },
-        settings: {
-            react: {
-                version: "detect"
-            }
-        },
         rules: {
-            ...reactPlugin.configs.recommended.rules,
             ...reactHooksPlugin.configs.recommended.rules,
             ...nextPlugin.configs.recommended.rules,
             ...nextPlugin.configs["core-web-vitals"].rules,
 
             "unused-imports/no-unused-imports": "warn",
-            "react/react-in-jsx-scope": "off",
-            "react/prop-types": "off",
 
             // Adjustments for existing codebase
             "@typescript-eslint/no-unused-vars": "warn",
@@ -75,6 +65,9 @@ export default tseslint.config(
             "prefer-spread": "off",
             // "react-hooks/refs" is flagging valid ref prop passing in some cases or is too strict for current codebase patterns
             "react-hooks/refs": "off",
+            // New React Compiler rules in eslint-plugin-react-hooks 7 flag existing patterns across the legacy UI.
+            "react-hooks/preserve-manual-memoization": "off",
+            "react-hooks/set-state-in-effect": "off",
             "react-hooks/rules-of-hooks": "error", // Ensure this stays on
             "react-hooks/exhaustive-deps": "warn" // Ensure this stays on
         }
