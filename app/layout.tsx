@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   title: "QuanAiChat",
   description: "quanquan.space 公益 GPT 服务",
   icons: {
-    icon: "/quanai.png",
-    shortcut: "/quanai.png",
-    apple: "/quanai.png",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/quanai.webp",
   },
   appleWebApp: {
     title: "QuanAiChat",

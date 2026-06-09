@@ -106,17 +106,5 @@
     "typescript-eslint": "^8.49.0",
     "webpack": "^5.103.0"
   },
-  "packageManager": "pnpm@11.0.9",
-  "pnpm": {
-    "overrides": {
-      "@types/react": "^19.2.7",
-      "@types/react-dom": "^19.2.3"
-    },
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "esbuild",
-      "sharp",
-      "unrs-resolver"
-    ]
-  }
+  "packageManager": "pnpm@11.0.9"
 }

@@ -26,9 +26,10 @@ describe("brand name and logo", () => {
   });
 
   test("uses the QuanAiChat logo asset names", () => {
-    expect(fs.existsSync(path.join(root, "assets/quanai.png"))).toBe(true);
-    expect(fs.existsSync(path.join(root, "public/quanai.png"))).toBe(true);
-    expect(read("app/layout.tsx")).toContain("/quanai.png");
-    expect(read("app/components/sidebar.tsx")).toContain("assets/quanai.png");
+    expect(fs.existsSync(path.join(root, "assets/quanai.webp"))).toBe(true);
+    expect(fs.existsSync(path.join(root, "public/quanai.webp"))).toBe(true);
+    expect(fs.existsSync(path.join(root, "app/favicon.ico"))).toBe(true);
+    expect(read("app/layout.tsx")).toContain("/favicon.ico");
+    expect(read("app/components/sidebar.tsx")).toContain("assets/quanai.webp");
   });
 });

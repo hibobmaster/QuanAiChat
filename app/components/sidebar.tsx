@@ -8,7 +8,7 @@ import GithubIcon from "../icons/github.svg";
 import Image from "next/image";
 import { IconButton } from "./button";
 
-import QuanAiLogo from "../../assets/quanai.png";
+import QuanAiLogo from "../../assets/quanai.webp";
 
 import Locale from "../locales";
 
