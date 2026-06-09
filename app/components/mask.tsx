@@ -95,7 +95,7 @@ export function MaskConfig(props: {
   };
 
   const copyMaskLink = () => {
-    const maskLink = `${location.protocol}//${location.host}/#${Path.NewChat}?mask=${props.mask.id}`;
+    const maskLink = `${location.protocol}//${location.host}${Path.NewChat}?mask=${props.mask.id}`;
     copyToClipboard(maskLink);
   };
 

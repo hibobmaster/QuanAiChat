@@ -121,7 +121,7 @@ export function ArtifactsShareButton({
   const [name, setName] = useState(id);
   const [show, setShow] = useState(false);
   const shareUrl = useMemo(
-    () => [location.origin, "#", Path.Artifacts, "/", name].join(""),
+    () => [location.origin, Path.Artifacts, "/", name].join(""),
     [name],
   );
   const upload = (code: string) =>

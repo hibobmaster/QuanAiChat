@@ -5,6 +5,7 @@ import { getClientConfig } from "./config/client";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { getServerSideConfig } from "./config/server";
+import { AppProviders } from "./components/home";
 
 export const metadata: Metadata = {
   title: "QuanAiChat",
@@ -56,7 +57,9 @@ export default function RootLayout({
           data-website-id="6ac8e216-95c3-495d-8974-ad467b2c7fed"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }
